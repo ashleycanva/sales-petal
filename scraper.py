@@ -25,6 +25,49 @@ STORES = ['sephora', 'ulta', 'amazon', 'nordstrom', 'macys', 'macy']
 EMAIL = 'thanhthanh12396@gmail.com'
 SITE_URL = 'https://ashleycanva.github.io/sales-petal'
 
+# Specific products to watch for — deal alerts will flag these by name
+MY_PRODUCTS = [
+    {
+        'name': 'Advanced Génifique Face Serum',
+        'brand': 'Lancôme',
+        'keywords': ['advanced genifique', 'genifique serum', 'genifique face', 'génifique serum', 'génifique face']
+    },
+    {
+        'name': 'Advanced Génifique Night Cream',
+        'brand': 'Lancôme',
+        'keywords': ['genifique night', 'génifique night', 'genifique cream', 'génifique cream']
+    },
+    {
+        'name': 'Rénergie H.P.N. 300-Peptide Cream',
+        'brand': 'Lancôme',
+        'keywords': ['renergie', 'rénergie', 'h.p.n', 'hpn', '300-peptide', '300 peptide']
+    },
+    {
+        'name': 'Major Headlines Blush Duo',
+        'brand': 'Patrick Ta',
+        'keywords': ['major headlines', 'double-take blush', 'double take blush', 'creme powder blush']
+    },
+    {
+        'name': 'Veil Hydrating Skin Tint',
+        'brand': 'Hourglass',
+        'keywords': ['veil hydrating', 'veil skin tint', 'hydrating skin tint']
+    },
+    {
+        'name': 'Vanish Concealer',
+        'brand': 'Hourglass',
+        'keywords': ['vanish concealer', 'vanish airbrush concealer', 'hourglass vanish']
+    },
+]
+
+def match_products(text):
+    """Return list of matched product names if deal text mentions any tracked product."""
+    tl = text.lower()
+    matched = []
+    for p in MY_PRODUCTS:
+        if any(kw in tl for kw in p['keywords']):
+            matched.append(p['name'])
+    return matched
+
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
@@ -279,16 +322,24 @@ def scrape_ulta():
     return deals
 
 # ── Email ─────────────────────────────────────────────────────────────────────
-def send_email(new_deals, total_count):
+def send_email(new_deals, total_count, product_matches=None):
     pw = os.environ.get('GMAIL_APP_PASSWORD', '')
     if not pw:
         print('GMAIL_APP_PASSWORD not set — skipping email')
         return
     try:
-        cards_html = ''
-        for d in new_deals:
-            cards_html += f'''
-            <div style="background:#FCF9F5;border:1px solid #E3D6C7;border-radius:12px;padding:16px;margin-bottom:12px;border-left:3px solid #C98B7A;">
+        product_matches = product_matches or []
+
+        def deal_card(d, highlight=False):
+            border = '#8B6B4A' if highlight else '#C98B7A'
+            bg = '#FFF5EE' if highlight else '#FCF9F5'
+            product_badge = ''
+            if d.get('matched_products'):
+                names = ', '.join(d['matched_products'])
+                product_badge = f'<div style="background:#8B6B4A;color:white;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;display:inline-block;margin-bottom:6px;">Your Product: {names}</div><br>'
+            return f'''
+            <div style="background:{bg};border:1px solid #E3D6C7;border-radius:12px;padding:16px;margin-bottom:12px;border-left:4px solid {border};">
+              {product_badge}
               <div style="font-size:18px;font-weight:800;color:#2B2724;font-family:Arial,sans-serif;">{d["brand"]}</div>
               <span style="display:inline-block;background:#F4E6DD;color:#C98B7A;font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;margin:5px 0;">{d["discount"]}</span>
               <div style="font-size:13px;color:#2B2724;margin:4px 0;">{d.get("title","")}</div>
@@ -299,13 +350,29 @@ def send_email(new_deals, total_count):
               </div>
             </div>'''
 
+        product_section = ''
+        if product_matches:
+            pm_cards = ''.join(deal_card(d, highlight=True) for d in product_matches)
+            product_section = f'''
+            <div style="background:#FFF0E6;border:1px solid #D4A88A;border-radius:14px;padding:16px;margin-bottom:20px;">
+              <div style="font-size:13px;font-weight:800;color:#8B6B4A;text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px;">
+                Your Refill Products on Sale
+              </div>
+              {pm_cards}
+            </div>'''
+
+        other_deals = [d for d in new_deals if not d.get('matched_products')]
+        cards_html = ''.join(deal_card(d) for d in other_deals)
+
+        subject_prefix = f'Your product is on sale! + ' if product_matches else ''
         html = f'''<div style="font-family:Arial,sans-serif;max-width:480px;margin:0 auto;background:#F6F0E9;padding:28px 22px;border-radius:16px;">
           <div style="text-align:center;margin-bottom:24px;">
             <div style="font-size:11px;letter-spacing:.4em;text-transform:uppercase;color:#C98B7A;font-weight:600;">Curated Beauty Sales</div>
             <div style="font-size:44px;font-weight:900;color:#2B2724;line-height:1;">SALE <span style="color:#C98B7A;">PETAL</span></div>
           </div>
-          <p style="color:#6E6259;font-size:14px;margin-bottom:20px;">
-            🌸 <strong>{len(new_deals)} new deal{"s" if len(new_deals)!=1 else ""}</strong> just dropped for your tracked brands:
+          {product_section}
+          <p style="color:#6E6259;font-size:14px;margin-bottom:16px;">
+            <strong>{len(new_deals)} new deal{"s" if len(new_deals)!=1 else ""}</strong> just dropped for your tracked brands:
           </p>
           {cards_html}
           <div style="text-align:center;margin-top:24px;">
@@ -319,7 +386,7 @@ def send_email(new_deals, total_count):
         </div>'''
 
         msg = MIMEMultipart('alternative')
-        msg['Subject'] = f'🌸 Sale Petal — {len(new_deals)} new deal{"s" if len(new_deals)!=1 else ""} found!'
+        msg['Subject'] = f'🌸 Sale Petal — {subject_prefix}{len(new_deals)} new deal{"s" if len(new_deals)!=1 else ""} found!'
         msg['From'] = EMAIL
         msg['To'] = EMAIL
         msg.attach(MIMEText(html, 'html'))
@@ -368,6 +435,14 @@ def main():
     all_deals = unique
     print(f'Total unique: {len(all_deals)}')
 
+    # Tag each deal with any matched products
+    for d in all_deals:
+        full_text = d.get('title', '') + ' ' + d.get('details', '')
+        d['matched_products'] = match_products(full_text)
+
+    product_matches = [d for d in all_deals if d['matched_products']]
+    print(f'Product matches: {len(product_matches)}')
+
     # Load previous
     try:
         with open('deals.json') as f:
@@ -377,17 +452,19 @@ def main():
 
     prev_ids = {deal_id(d) for d in prev}
     new_deals = [d for d in all_deals if deal_id(d) not in prev_ids]
-    print(f'New: {len(new_deals)}')
+    new_product_matches = [d for d in new_deals if d['matched_products']]
+    print(f'New: {len(new_deals)} | New product matches: {len(new_product_matches)}')
 
     with open('deals.json', 'w') as f:
         json.dump({
             'deals': all_deals,
             'updatedAt': datetime.utcnow().isoformat() + 'Z',
-            'count': len(all_deals)
+            'count': len(all_deals),
+            'products': [p['name'] for p in MY_PRODUCTS]
         }, f, indent=2)
 
     if new_deals:
-        send_email(new_deals, len(all_deals))
+        send_email(new_deals, len(all_deals), new_product_matches)
 
     print('Done.')
 
