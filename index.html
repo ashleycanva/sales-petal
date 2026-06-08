@@ -30,10 +30,32 @@
   .kicker { font-size: 11px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--clay); font-weight: 600; }
   h1 { font-family: var(--display); font-weight: 400; font-size: 62px; text-align: center; line-height: 0.9; margin: 4px 0 12px; letter-spacing: 0.01em; text-transform: uppercase; color: var(--ink); }
   h1 em { font-style: normal; color: var(--clay); }
-  .subtitle { text-align: center; color: var(--ink-soft); font-size: 13.5px; font-weight: 400; letter-spacing: 0.02em; margin-bottom: 28px; }
+  .subtitle { text-align: center; color: var(--ink-soft); font-size: 13.5px; font-weight: 400; letter-spacing: 0.02em; margin-bottom: 32px; }
   .section-label { font-size: 10.5px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--ink-soft); font-weight: 600; margin-bottom: 12px; display: block; }
-  .brands { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
-  .chip { display: inline-flex; align-items: center; background: var(--paper); border: 1px solid var(--line); padding: 7px 14px; border-radius: 100px; font-size: 13px; font-weight: 500; color: var(--ink); }
+  .divider { border: none; border-top: 1px solid var(--line); margin: 28px 0; }
+
+  /* ── Refill list ── */
+  .refill-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
+  .refill-card { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 15px 18px; position: relative; overflow: hidden; transition: transform .2s, box-shadow .2s; }
+  .refill-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--line); }
+  .refill-card.on-sale { background: #FFF8F5; border-color: var(--clay-soft); }
+  .refill-card.on-sale::before { background: linear-gradient(var(--clay-soft), var(--gold)); }
+  .refill-card:hover { transform: translateY(-1px); box-shadow: 0 6px 18px -10px var(--shadow); }
+  .refill-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+  .refill-info { flex: 1; }
+  .refill-brand-label { font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-soft); font-weight: 600; margin-bottom: 3px; }
+  .refill-name { font-size: 14px; font-weight: 600; color: var(--ink); line-height: 1.35; }
+  .status-pill { font-size: 10px; font-weight: 700; padding: 4px 12px; border-radius: 100px; white-space: nowrap; flex-shrink: 0; letter-spacing: 0.05em; margin-top: 2px; }
+  .status-pill.on-sale { background: var(--clay); color: white; }
+  .status-pill.watching { background: var(--cream-deep); color: var(--ink-soft); }
+  .refill-deal { margin-top: 12px; padding-top: 11px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
+  .refill-deal-left { display: flex; flex-direction: column; gap: 3px; }
+  .refill-discount { display: inline-block; font-size: 12px; font-weight: 700; color: var(--clay); background: #F4E6DD; padding: 2px 10px; border-radius: 100px; }
+  .refill-retailer { font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-soft); font-weight: 600; }
+  .refill-link { font-size: 12px; color: var(--clay); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; transition: gap .2s; }
+  .refill-link:hover { gap: 8px; }
+
+  /* ── Store filter + deals ── */
   .filter-row { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
   .filter-btn { background: var(--paper); border: 1px solid var(--line); border-radius: 100px; padding: 7px 16px; font-family: var(--body); font-size: 12px; font-weight: 600; color: var(--ink-soft); cursor: pointer; transition: all .2s; letter-spacing: 0.04em; }
   .filter-btn.active { background: var(--ink); color: var(--cream); border-color: var(--ink); }
@@ -62,7 +84,6 @@
   .deal-retailer { font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-soft); font-weight: 600; }
   .deal-link { font-size: 12px; color: var(--clay); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; transition: gap .2s; }
   .deal-link:hover { gap: 9px; }
-  .deal-until { font-size: 11px; color: var(--gold); font-weight: 600; margin-top: 6px; letter-spacing: 0.02em; }
   .state { text-align: center; padding: 50px 20px; color: var(--ink-soft); }
   .state .mark { font-size: 44px; color: var(--clay-soft); margin-bottom: 14px; line-height: 1; }
   .state p { font-size: 14px; font-weight: 400; line-height: 1.6; }
@@ -70,11 +91,6 @@
   .skeleton { background: var(--paper); border: 1px solid var(--line); border-radius: 20px; padding: 18px 19px; }
   .sk-line { height: 12px; border-radius: 6px; background: linear-gradient(90deg, var(--cream-deep) 25%, var(--sand) 50%, var(--cream-deep) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; margin-bottom: 10px; }
   @keyframes shimmer { to { background-position: -200% 0; } }
-  .notice { background: #F0F6F0; border: 1px solid #C5D9C5; border-radius: 12px; padding: 12px 16px; margin-bottom: 20px; font-size: 12.5px; color: #4A6B4A; line-height: 1.6; }
-  .notice b { color: #3A5B3A; }
-  .your-products-section { background: #FFF0E6; border: 1px solid #D4A88A; border-radius: 16px; padding: 18px 19px; margin-bottom: 24px; }
-  .your-products-label { font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: #8B6B4A; font-weight: 700; margin-bottom: 12px; display: block; }
-  .product-match-tag { display: inline-block; background: #8B6B4A; color: white; font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 100px; margin-bottom: 6px; letter-spacing: 0.05em; }
   .footnote { text-align: center; font-size: 11px; color: #BCAE9F; margin-top: 34px; font-weight: 400; line-height: 1.6; }
 </style>
 </head>
@@ -84,16 +100,16 @@
   <h1>Sale <em>Petal</em></h1>
   <p class="subtitle">Your favorite brands, on sale — all in one quiet place.</p>
 
-  <span class="section-label">Tracked Brands</span>
-  <div class="brands">
-    <span class="chip">Lancôme</span>
-    <span class="chip">Dr. Jart+</span>
-    <span class="chip">Hourglass</span>
-    <span class="chip">Patrick Ta</span>
+  <span class="section-label">My Refill List</span>
+  <div class="refill-list" id="refillList">
+    <div class="skeleton"><div class="sk-line" style="width:30%"></div><div class="sk-line" style="width:60%"></div></div>
+    <div class="skeleton"><div class="sk-line" style="width:30%"></div><div class="sk-line" style="width:55%"></div></div>
+    <div class="skeleton"><div class="sk-line" style="width:30%"></div><div class="sk-line" style="width:65%"></div></div>
   </div>
 
-  <div class="your-products-section" id="productMatchSection" style="display:none"></div>
+  <hr class="divider" />
 
+  <span class="section-label">All Deals</span>
   <div class="filter-row">
     <button class="filter-btn active" data-store="all">All Stores</button>
     <button class="filter-btn" data-store="Sephora">Sephora</button>
@@ -117,6 +133,15 @@
 </div>
 
 <script>
+  const MY_PRODUCTS = [
+    { name: 'Advanced Génifique Face Serum',         brand: 'Lancôme' },
+    { name: 'Advanced Génifique Night Cream',         brand: 'Lancôme' },
+    { name: 'Rénergie H.P.N. 300-Peptide Cream',     brand: 'Lancôme' },
+    { name: 'Major Headlines Blush Duo',              brand: 'Patrick Ta' },
+    { name: 'Veil Hydrating Skin Tint',               brand: 'Hourglass' },
+    { name: 'Vanish Concealer',                       brand: 'Hourglass' },
+  ];
+
   let allDeals = [];
   let activeStore = 'all';
   let seenIds = new Set(JSON.parse(localStorage.getItem('sp:seen') || '[]'));
@@ -128,13 +153,45 @@
     return (d.brand + '|' + d.retailer + '|' + (d.title||'')).toLowerCase().replace(/\s+/g,'');
   }
 
+  function renderRefillList(deals) {
+    const el = document.getElementById('refillList');
+    el.innerHTML = MY_PRODUCTS.map(p => {
+      const matchingDeals = deals.filter(d =>
+        d.matched_products && d.matched_products.includes(p.name)
+      );
+      const onSale = matchingDeals.length > 0;
+      const deal = matchingDeals[0];
+      const url = deal && deal.url && /^https?:\/\//i.test(deal.url) ? deal.url : '#';
+
+      const dealSection = onSale ? `
+        <div class="refill-deal">
+          <div class="refill-deal-left">
+            <span class="refill-discount">${esc(deal.discount)}</span>
+            <span class="refill-retailer">${esc(deal.retailer)}</span>
+          </div>
+          <a class="refill-link" href="${esc(url)}" target="_blank" rel="noopener">View deal &#8594;</a>
+        </div>` : '';
+
+      return `
+        <div class="refill-card ${onSale ? 'on-sale' : ''}">
+          <div class="refill-top">
+            <div class="refill-info">
+              <div class="refill-brand-label">${esc(p.brand)}</div>
+              <div class="refill-name">${esc(p.name)}</div>
+            </div>
+            <span class="status-pill ${onSale ? 'on-sale' : 'watching'}">${onSale ? 'On Sale' : 'Watching'}</span>
+          </div>
+          ${dealSection}
+        </div>`;
+    }).join('');
+  }
+
   function renderDeals(deals) {
     const el = document.getElementById('deals');
     const filtered = activeStore === 'all' ? deals : deals.filter(d => d.retailer === activeStore);
 
     document.getElementById('count').innerHTML = filtered.length
-      ? '<b>' + filtered.length + '</b> deal' + (filtered.length !== 1 ? 's' : '')
-      : '';
+      ? '<b>' + filtered.length + '</b> deal' + (filtered.length !== 1 ? 's' : '') : '';
 
     if (!filtered.length) {
       el.innerHTML = '<div class="state"><div class="mark">&#10047;</div><p>No deals right now for these brands.</p><p class="small">The scraper checks every 4 hours — check back soon.</p></div>';
@@ -155,7 +212,6 @@
         (d.discount ? '<span class="deal-discount">' + esc(d.discount) + '</span>' : '') +
         (d.title ? '<div class="deal-title">' + esc(d.title) + '</div>' : '') +
         (d.details ? '<div class="deal-details">' + esc(d.details) + '</div>' : '') +
-        (d.validUntil ? '<div class="deal-until">Through ' + esc(d.validUntil) + '</div>' : '') +
         '<div class="deal-foot"><span class="deal-retailer">' + esc(d.retailer || '') + '</span>' +
         '<a class="deal-link" href="' + esc(url) + '" target="_blank" rel="noopener">View deal &#8594;</a></div>';
       el.appendChild(card);
@@ -164,47 +220,21 @@
     localStorage.setItem('sp:seen', JSON.stringify([...seenIds]));
   }
 
-  function renderProductMatches(deals) {
-    const matches = deals.filter(d => d.matched_products && d.matched_products.length);
-    const section = document.getElementById('productMatchSection');
-    if (!matches.length) { section.innerHTML = ''; section.style.display = 'none'; return; }
-    section.style.display = 'block';
-
-    let html = '<span class="your-products-label">Your Refill Products on Sale</span>';
-    matches.forEach((d, i) => {
-      const url = d.url && /^https?:\/\//i.test(d.url) ? d.url : '#';
-      html += `<div class="deal" style="background:#FFF5EE;border-left-color:#8B6B4A;animation-delay:${i*0.05}s">
-        <span class="product-match-tag">Your Product: ${esc(d.matched_products.join(', '))}</span>
-        <div class="deal-top"><span class="deal-brand">${esc(d.brand)}</span></div>
-        ${d.discount ? `<span class="deal-discount">${esc(d.discount)}</span>` : ''}
-        ${d.title ? `<div class="deal-title">${esc(d.title)}</div>` : ''}
-        ${d.details ? `<div class="deal-details">${esc(d.details)}</div>` : ''}
-        <div class="deal-foot">
-          <span class="deal-retailer">${esc(d.retailer||'')}</span>
-          <a class="deal-link" href="${esc(url)}" target="_blank" rel="noopener">View deal &#8594;</a>
-        </div>
-      </div>`;
-    });
-    section.innerHTML = html;
-  }
-
   async function loadDeals(showSpinner) {
     const btn = document.getElementById('refreshBtn');
     if (showSpinner) btn.innerHTML = '<span class="spin"></span> Checking…';
-
     try {
       const r = await fetch('deals.json?t=' + Date.now());
       if (!r.ok) throw new Error('fetch failed');
       const data = await r.json();
       allDeals = data.deals || [];
-
       if (data.updatedAt) {
         const d = new Date(data.updatedAt);
         document.getElementById('lastChecked').textContent = 'Updated ' +
           d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) + ' · ' +
           d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
       }
-      renderProductMatches(allDeals);
+      renderRefillList(allDeals);
       renderDeals(allDeals);
     } catch (e) {
       if (!allDeals.length) {
@@ -216,7 +246,6 @@
     }
   }
 
-  // Store filter buttons
   document.querySelectorAll('.filter-btn[data-store]').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.filter-btn[data-store]').forEach(b => b.classList.remove('active'));
@@ -227,8 +256,6 @@
   });
 
   document.getElementById('refreshBtn').addEventListener('click', () => loadDeals(true));
-
-  // Auto-refresh every 30 minutes
   loadDeals(false);
   setInterval(() => loadDeals(false), 30 * 60 * 1000);
 </script>
