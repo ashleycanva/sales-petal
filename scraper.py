@@ -2,10 +2,17 @@ import requests
 import json
 import smtplib
 import os
+import re
 from bs4 import BeautifulSoup
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from datetime import datetime
+
+try:
+    import feedparser
+    HAS_FEEDPARSER = True
+except ImportError:
+    HAS_FEEDPARSER = False
 
 BRANDS = ['lancome', 'lancôme', 'dr. jart', 'dr jart', 'hourglass', 'patrick ta', 'patrick ta beauty']
 BRAND_DISPLAY = {
@@ -14,13 +21,18 @@ BRAND_DISPLAY = {
     'hourglass': 'Hourglass',
     'patrick ta': 'Patrick Ta', 'patrick ta beauty': 'Patrick Ta'
 }
+STORES = ['sephora', 'ulta', 'amazon', 'nordstrom', 'macys', 'macy']
 EMAIL = 'thanhthanh12396@gmail.com'
 SITE_URL = 'https://ashleycanva.github.io/sales-petal'
 
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
     'Accept-Language': 'en-US,en;q=0.9',
     'Accept-Encoding': 'gzip, deflate, br',
+    'DNT': '1',
+    'Connection': 'keep-alive',
+    'Upgrade-Insecure-Requests': '1',
 }
 
 def match_brand(text):
@@ -33,93 +45,217 @@ def match_brand(text):
     return None
 
 def deal_id(d):
-    return (d.get('brand','') + '|' + d.get('retailer','') + '|' + d.get('title','')).lower().strip()
+    return (d.get('brand', '') + '|' + d.get('retailer', '') + '|' + d.get('title', '')).lower().strip()
 
-# ── Sephora ────────────────────────────────────────────────────────────────────
-def scrape_sephora():
+def extract_discount(text):
+    m = re.search(r'(\d+)\s*%\s*off', text, re.IGNORECASE)
+    if m:
+        return f'{m.group(1)}% off'
+    m = re.search(r'\$(\d+)\s*off', text, re.IGNORECASE)
+    if m:
+        return f'${m.group(1)} off'
+    if re.search(r'sale|deal|discount|promo|markdown|clearance', text, re.IGNORECASE):
+        return 'On Sale'
+    return 'Deal'
+
+def extract_retailer(text):
+    tl = text.lower()
+    if 'sephora' in tl:
+        return 'Sephora'
+    if 'ulta' in tl:
+        return 'Ulta'
+    if 'amazon' in tl:
+        return 'Amazon'
+    if 'nordstrom' in tl:
+        return 'Nordstrom'
+    if 'macys' in tl or "macy's" in tl:
+        return "Macy's"
+    return 'Online'
+
+# ── SlickDeals RSS (most reliable, no bot detection) ──────────────────────────
+def scrape_slickdeals():
+    if not HAS_FEEDPARSER:
+        print('feedparser not available')
+        return []
+
     deals = []
-    try:
-        url = ('https://www.sephora.com/api/catalog/categories/sale/products'
-               '?currentPage=1&pageSize=100&content=true&country=US&lang=en-US&includeRegionsMap=true')
-        r = requests.get(url, headers={**HEADERS, 'Accept': 'application/json'}, timeout=20)
-        if r.status_code == 200:
-            products = r.json().get('products', [])
-            for p in products:
-                brand_name = p.get('brand', {}).get('displayName', '')
-                matched = match_brand(brand_name)
-                if not matched:
+    queries = [
+        ('lancome beauty', 'Lancôme'),
+        ('dr jart', 'Dr. Jart+'),
+        ('hourglass cosmetics', 'Hourglass'),
+        ('patrick ta beauty', 'Patrick Ta'),
+        ('sephora sale skincare', None),
+        ('ulta sale makeup', None),
+    ]
+
+    seen = set()
+    for query, brand_override in queries:
+        try:
+            url = f'https://slickdeals.net/newsearch.php?src=SearchBarV2&mode=frontpage&searcharea=deals&q={query.replace(" ", "+")}&rss=1'
+            feed = feedparser.parse(url)
+            print(f'  SlickDeals "{query}": {len(feed.entries)} entries')
+
+            for entry in feed.entries[:8]:
+                title = entry.get('title', '')
+                link = entry.get('link', '')
+                summary_html = entry.get('summary', '')
+                summary = BeautifulSoup(summary_html, 'html.parser').get_text(separator=' ')[:200]
+                full_text = title + ' ' + summary
+
+                brand = brand_override
+                if not brand:
+                    brand = match_brand(full_text)
+                if not brand:
                     continue
-                lp = p.get('currentSku', {}).get('listPrice', '')
-                sp = p.get('currentSku', {}).get('salePrice', '') or lp
-                discount = ''
-                try:
-                    pct = round((float(lp.replace('$','')) - float(sp.replace('$',''))) / float(lp.replace('$','')) * 100)
-                    if pct > 0:
-                        discount = f'{pct}% off'
-                except Exception:
-                    pass
+
+                retailer = extract_retailer(full_text)
+                discount = extract_discount(full_text)
+                uid = (brand + title).lower()
+                if uid in seen:
+                    continue
+                seen.add(uid)
+
                 deals.append({
-                    'brand': matched,
-                    'retailer': 'Sephora',
-                    'title': p.get('displayName', ''),
-                    'discount': discount or 'On Sale',
-                    'details': f'Was {lp} — now {sp}' if lp and sp and lp != sp else '',
-                    'url': 'https://www.sephora.com' + p.get('targetUrl', ''),
-                    'image': p.get('heroImage', ''),
+                    'brand': brand,
+                    'retailer': retailer,
+                    'title': title[:80],
+                    'discount': discount,
+                    'details': summary[:100] if summary else '',
+                    'url': link,
+                    'image': '',
                     'validUntil': ''
                 })
-        else:
-            print(f'Sephora API: {r.status_code}')
-    except Exception as e:
-        print(f'Sephora error: {e}')
+        except Exception as e:
+            print(f'SlickDeals error for "{query}": {e}')
 
-    # Fallback: brand-specific sale pages
-    if not deals:
-        for brand_slug, brand_name in [('lancome', 'Lancôme'), ('dr-jart', 'Dr. Jart+'),
-                                        ('hourglass', 'Hourglass'), ('patrick-ta', 'Patrick Ta')]:
-            try:
-                url = f'https://www.sephora.com/brand/{brand_slug}?currentPage=1&pageSize=60&sortBy=SALE'
-                r = requests.get(url, headers={**HEADERS, 'Accept': 'application/json'}, timeout=20)
-                if r.status_code == 200:
-                    data = r.json()
-                    for p in data.get('products', []):
-                        lp = p.get('currentSku', {}).get('listPrice', '')
-                        sp = p.get('currentSku', {}).get('salePrice', '') or lp
-                        if lp == sp:
-                            continue
-                        deals.append({
-                            'brand': brand_name,
-                            'retailer': 'Sephora',
-                            'title': p.get('displayName', ''),
-                            'discount': 'On Sale',
-                            'details': f'Was {lp} — now {sp}',
-                            'url': 'https://www.sephora.com' + p.get('targetUrl', ''),
-                            'image': p.get('heroImage', ''),
-                            'validUntil': ''
-                        })
-            except Exception as e:
-                print(f'Sephora brand {brand_slug} error: {e}')
     return deals
 
-# ── Ulta ──────────────────────────────────────────────────────────────────────
-def scrape_ulta():
+# ── DealNews RSS ──────────────────────────────────────────────────────────────
+def scrape_dealnews():
+    if not HAS_FEEDPARSER:
+        return []
+
     deals = []
+    queries = ['lancome', 'dr+jart', 'hourglass+cosmetics', 'patrick+ta+beauty']
+
+    for query in queries:
+        try:
+            url = f'https://www.dealnews.com/c196/Beauty-Personal-Care/?p=&q={query}&s=1'
+            r = requests.get(url, headers=HEADERS, timeout=15)
+            if r.status_code != 200:
+                continue
+            soup = BeautifulSoup(r.text, 'html.parser')
+            items = soup.select('article, .deal-item, [class*="deal"]')[:5]
+            for item in items:
+                title_el = item.select_one('h2, h3, .title, [class*="title"]')
+                link_el = item.select_one('a[href]')
+                price_el = item.select_one('.price, [class*="price"]')
+                if not title_el:
+                    continue
+                title = title_el.get_text(strip=True)
+                brand = match_brand(title)
+                if not brand:
+                    continue
+                href = link_el['href'] if link_el else ''
+                if href and not href.startswith('http'):
+                    href = 'https://www.dealnews.com' + href
+                deals.append({
+                    'brand': brand,
+                    'retailer': extract_retailer(title),
+                    'title': title[:80],
+                    'discount': price_el.get_text(strip=True) if price_el else extract_discount(title),
+                    'details': '',
+                    'url': href,
+                    'image': '',
+                    'validUntil': ''
+                })
+        except Exception as e:
+            print(f'DealNews error for {query}: {e}')
+
+    return deals
+
+# ── Sephora direct API ────────────────────────────────────────────────────────
+def scrape_sephora():
+    deals = []
+    session = requests.Session()
+
+    # Warm up session with a page visit
+    try:
+        session.get('https://www.sephora.com', headers=HEADERS, timeout=15)
+    except Exception:
+        pass
+
     brand_slugs = [
         ('lancome', 'Lancôme'),
         ('dr-jart', 'Dr. Jart+'),
         ('hourglass-cosmetics', 'Hourglass'),
         ('patrick-ta', 'Patrick Ta'),
     ]
+
+    for slug, display in brand_slugs:
+        try:
+            url = (f'https://www.sephora.com/api/catalog/brands/{slug}/products'
+                   f'?currentPage=1&pageSize=60&content=true&country=US&lang=en-US'
+                   f'&sortBy=SALE&onSale=true')
+            r = session.get(url, headers={**HEADERS, 'Accept': 'application/json',
+                                          'Referer': 'https://www.sephora.com/'}, timeout=15)
+            print(f'  Sephora {slug}: {r.status_code}')
+            if r.status_code == 200:
+                products = r.json().get('products', [])
+                for p in products:
+                    lp = p.get('currentSku', {}).get('listPrice', '')
+                    sp = p.get('currentSku', {}).get('salePrice', '') or lp
+                    if lp == sp:
+                        continue
+                    try:
+                        pct = round((float(lp.replace('$','')) - float(sp.replace('$',''))) / float(lp.replace('$','')) * 100)
+                        discount = f'{pct}% off' if pct > 0 else 'On Sale'
+                    except Exception:
+                        discount = 'On Sale'
+                    deals.append({
+                        'brand': display,
+                        'retailer': 'Sephora',
+                        'title': p.get('displayName', '')[:80],
+                        'discount': discount,
+                        'details': f'Was {lp} — now {sp}',
+                        'url': 'https://www.sephora.com' + p.get('targetUrl', ''),
+                        'image': p.get('heroImage', ''),
+                        'validUntil': ''
+                    })
+        except Exception as e:
+            print(f'  Sephora {slug} error: {e}')
+
+    return deals
+
+# ── Ulta direct ───────────────────────────────────────────────────────────────
+def scrape_ulta():
+    deals = []
+    session = requests.Session()
+
+    try:
+        session.get('https://www.ulta.com', headers=HEADERS, timeout=15)
+    except Exception:
+        pass
+
+    brand_slugs = [
+        ('lancome', 'Lancôme'),
+        ('dr-jart', 'Dr. Jart+'),
+        ('hourglass-cosmetics', 'Hourglass'),
+        ('patrick-ta', 'Patrick Ta'),
+    ]
+
     for slug, display in brand_slugs:
         try:
             url = f'https://www.ulta.com/brand/{slug}?prefn1=isSaleOrPromo&prefv1=Sale'
-            r = requests.get(url, headers={**HEADERS, 'Accept': 'text/html'}, timeout=20)
+            r = session.get(url, headers={**HEADERS, 'Referer': 'https://www.ulta.com/'}, timeout=20)
+            print(f'  Ulta {slug}: {r.status_code}')
             if r.status_code != 200:
                 continue
             soup = BeautifulSoup(r.text, 'html.parser')
-            cards = soup.select('.ProductCard, [class*="product-card"], [class*="ProductCard"]')
-            for card in cards[:10]:
-                name_el = card.select_one('[class*="ProductCard-name"], [class*="product-name"], h3')
+            cards = soup.select('.ProductCard, [class*="ProductCard"]')
+            print(f'    Found {len(cards)} product cards')
+            for card in cards[:8]:
+                name_el = card.select_one('[class*="name"], [class*="Name"], h3, h4')
                 sale_el = card.select_one('[class*="sale"], [class*="Sale"]')
                 link_el = card.select_one('a[href]')
                 if not name_el:
@@ -130,7 +266,7 @@ def scrape_ulta():
                 deals.append({
                     'brand': display,
                     'retailer': 'Ulta',
-                    'title': name_el.get_text(strip=True),
+                    'title': name_el.get_text(strip=True)[:80],
                     'discount': sale_el.get_text(strip=True) if sale_el else 'On Sale',
                     'details': '',
                     'url': href,
@@ -138,48 +274,8 @@ def scrape_ulta():
                     'validUntil': ''
                 })
         except Exception as e:
-            print(f'Ulta {slug} error: {e}')
-    return deals
+            print(f'  Ulta {slug} error: {e}')
 
-# ── Amazon ────────────────────────────────────────────────────────────────────
-def scrape_amazon():
-    deals = []
-    searches = [
-        ('Lancome beauty sale', 'Lancôme'),
-        ('Dr Jart beauty sale', 'Dr. Jart+'),
-        ('Hourglass cosmetics sale', 'Hourglass'),
-        ('Patrick Ta beauty sale', 'Patrick Ta'),
-    ]
-    for query, display in searches:
-        try:
-            url = f'https://www.amazon.com/s?k={query.replace(" ", "+")}&s=price-asc-rank'
-            r = requests.get(url, headers={**HEADERS, 'Accept': 'text/html'}, timeout=20)
-            if r.status_code != 200 or 'robot' in r.text[:500].lower():
-                continue
-            soup = BeautifulSoup(r.text, 'html.parser')
-            items = soup.select('[data-component-type="s-search-result"]')[:3]
-            for item in items:
-                name_el = item.select_one('h2 span')
-                price_el = item.select_one('.a-price .a-offscreen')
-                badge_el = item.select_one('.a-badge-text, [class*="savingsPercentage"]')
-                link_el = item.select_one('h2 a[href]')
-                if not name_el:
-                    continue
-                href = link_el['href'] if link_el else ''
-                if href and not href.startswith('http'):
-                    href = 'https://www.amazon.com' + href
-                deals.append({
-                    'brand': display,
-                    'retailer': 'Amazon',
-                    'title': name_el.get_text(strip=True)[:80],
-                    'discount': badge_el.get_text(strip=True) if badge_el else 'Deal',
-                    'details': price_el.get_text(strip=True) if price_el else '',
-                    'url': href,
-                    'image': '',
-                    'validUntil': ''
-                })
-        except Exception as e:
-            print(f'Amazon {display} error: {e}')
     return deals
 
 # ── Email ─────────────────────────────────────────────────────────────────────
@@ -240,13 +336,28 @@ def main():
     print(f'Starting scrape at {datetime.now().isoformat()}')
 
     all_deals = []
-    for fn, name in [(scrape_sephora, 'Sephora'), (scrape_ulta, 'Ulta'), (scrape_amazon, 'Amazon')]:
-        print(f'Scraping {name}...')
-        found = fn()
-        print(f'  {len(found)} deals found')
-        all_deals.extend(found)
 
-    # Deduplicate by ID
+    print('SlickDeals RSS...')
+    sd = scrape_slickdeals()
+    print(f'  {len(sd)} deals')
+    all_deals.extend(sd)
+
+    print('DealNews...')
+    dn = scrape_dealnews()
+    print(f'  {len(dn)} deals')
+    all_deals.extend(dn)
+
+    print('Sephora direct...')
+    sep = scrape_sephora()
+    print(f'  {len(sep)} deals')
+    all_deals.extend(sep)
+
+    print('Ulta direct...')
+    ulta = scrape_ulta()
+    print(f'  {len(ulta)} deals')
+    all_deals.extend(ulta)
+
+    # Deduplicate
     seen_ids = set()
     unique = []
     for d in all_deals:
@@ -255,6 +366,7 @@ def main():
             seen_ids.add(did)
             unique.append(d)
     all_deals = unique
+    print(f'Total unique: {len(all_deals)}')
 
     # Load previous
     try:
@@ -265,10 +377,14 @@ def main():
 
     prev_ids = {deal_id(d) for d in prev}
     new_deals = [d for d in all_deals if deal_id(d) not in prev_ids]
-    print(f'Total: {len(all_deals)} | New: {len(new_deals)}')
+    print(f'New: {len(new_deals)}')
 
     with open('deals.json', 'w') as f:
-        json.dump({'deals': all_deals, 'updatedAt': datetime.utcnow().isoformat() + 'Z', 'count': len(all_deals)}, f, indent=2)
+        json.dump({
+            'deals': all_deals,
+            'updatedAt': datetime.utcnow().isoformat() + 'Z',
+            'count': len(all_deals)
+        }, f, indent=2)
 
     if new_deals:
         send_email(new_deals, len(all_deals))
