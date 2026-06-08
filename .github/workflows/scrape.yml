@@ -33,4 +33,5 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git add deals.json
           git diff --staged --quiet || git commit -m "chore: update deals [skip ci]"
+          git pull --rebase origin main
           git push
