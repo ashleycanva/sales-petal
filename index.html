@@ -197,20 +197,28 @@ function renderDeals(deals) {
   currentIds.forEach(function(id){seen.add(id);}); save("salepetal:seen", Array.from(seen));
 }
 
+function showToast(msg, ok) {
+  var t = document.createElement("div");
+  t.textContent = msg;
+  t.style.cssText = "position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:"+(ok?"#2B2724":"#B5704F")+";color:#F6F0E9;padding:10px 20px;border-radius:100px;font-size:13px;font-weight:600;z-index:9999;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.25);";
+  document.body.appendChild(t);
+  setTimeout(function(){ t.remove(); }, 2500);
+}
+
 async function loadDeals(showSpinner) {
   if (loading) return;
   loading = true;
   var btn = $("findBtn"), label = $("findLabel");
   btn.disabled = true;
-  if (showSpinner) { label.textContent = "Checking…"; btn.insertAdjacentHTML("afterbegin","<span class=\"spin\"></span>"); showSkeletons(); }
+  if (showSpinner) { label.textContent = "Checking..."; btn.insertAdjacentHTML("afterbegin","<span class=\"spin\"></span>"); showSkeletons(); }
   try {
-    var r = await fetch("deals.json?t="+Date.now());
+    var r = await fetch("deals.json?nc="+Date.now(), {cache: "no-store"});
     if (!r.ok) throw new Error("HTTP "+r.status);
     var data = await r.json();
     var deals = data.deals || [];
     if (data.updatedAt) {
       var d = new Date(data.updatedAt);
-      var str = "Updated "+d.toLocaleDateString(undefined,{month:"short",day:"numeric"})+" · "+d.toLocaleTimeString(undefined,{hour:"numeric",minute:"2-digit"});
+      var str = "Updated "+d.toLocaleDateString(undefined,{month:"short",day:"numeric"})+" at "+d.toLocaleTimeString(undefined,{hour:"numeric",minute:"2-digit"});
       $("lastChecked").textContent = str;
       localStorage.setItem("salepetal:lastChecked", str);
     }
@@ -220,11 +228,11 @@ async function loadDeals(showSpinner) {
       return bm - am;
     });
     renderDeals(deals);
+    if (showSpinner) showToast("Deals refreshed - "+deals.length+" found", true);
     setTimeout(maybeAskNotifications, 1200);
   } catch(err) {
-    if (!$("deals").querySelector(".deal")) {
-      $("deals").innerHTML = "<div class=\"state\"><div class=\"mark\">&#10047;</div><p>Could not load deals.</p><p class=\"small\">Try again in a moment.</p></div>";
-    }
+    $("deals").innerHTML = "<div class=\"state\"><div class=\"mark\">&#10047;</div><p>Could not load deals.</p><p class=\"small\">"+err.message+"</p></div>";
+    if (showSpinner) showToast("Could not load: "+err.message, false);
   } finally {
     loading = false; btn.disabled = false;
     var s = btn.querySelector(".spin"); if (s) s.remove();

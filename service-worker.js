@@ -1,60 +1,13 @@
-const CACHE = 'salepetal-v6';
+// No caching — browser handles that natively.
+// This SW exists only for push notifications + periodic background sync.
+
 const NOTIF_STORE = 'salepetal-notif-v1';
-const ASSETS = [
-  '/sales-petal/',
-  '/sales-petal/index.html',
-  '/sales-petal/manifest.json'
-];
 
-// ── Install: cache core files ──────────────────────────────────────────────
-self.addEventListener('install', e => {
-  e.waitUntil(
-    caches.open(CACHE).then(cache => cache.addAll(ASSETS))
-  );
-  self.skipWaiting();
-});
-
-// ── Activate: clear old caches ─────────────────────────────────────────────
+self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', e => {
-  e.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
-    )
-  );
+  // Delete ALL old caches from previous versions
+  e.waitUntil(caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k)))));
   self.clients.claim();
-});
-
-// ── Fetch: network-first for app shell + data, cache-first for static assets ─
-self.addEventListener('fetch', e => {
-  const url = e.request.url;
-  // Let font requests go straight through (CDN handles caching)
-  if (url.includes('fonts.googleapis.com') || url.includes('fonts.gstatic.com')) return;
-  // Network-first for the page itself and deals data — ensures updates show immediately
-  const isAppShell = url.endsWith('/sales-petal/') || url.includes('index.html') || url.includes('deals.json');
-  if (isAppShell) {
-    e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
-    return;
-  }
-  // Cache-first for everything else (icons, manifest)
-  e.respondWith(caches.match(e.request).then(cached => cached || fetch(e.request)));
-});
-
-// ── Push notifications ─────────────────────────────────────────────────────
-self.addEventListener('push', e => {
-  const data = e.data ? e.data.json() : {};
-  const title = data.title || 'Sale Petal';
-  const options = {
-    body: data.body || 'New beauty deals found!',
-    icon: '/sales-petal/icons/icon-192.png',
-    badge: '/sales-petal/icons/icon-192.png',
-    vibrate: [200, 100, 200],
-    data: { url: data.url || '/sales-petal/' },
-    actions: [
-      { action: 'view', title: 'View Deals' },
-      { action: 'dismiss', title: 'Dismiss' }
-    ]
-  };
-  e.waitUntil(self.registration.showNotification(title, options));
 });
 
 // ── Periodic Background Sync: check deals.json for new matches ────────────
@@ -104,10 +57,23 @@ async function checkForNewDeals() {
   }
 }
 
+// ── Push notifications ─────────────────────────────────────────────────────
+self.addEventListener('push', e => {
+  const data = e.data ? e.data.json() : {};
+  const title = data.title || 'Sale Petal';
+  const options = {
+    body: data.body || 'New beauty deals found!',
+    icon: '/sales-petal/icons/icon-192.png',
+    badge: '/sales-petal/icons/icon-192.png',
+    vibrate: [200, 100, 200],
+    data: { url: data.url || '/sales-petal/' }
+  };
+  e.waitUntil(self.registration.showNotification(title, options));
+});
+
 // ── Notification click: open the app ──────────────────────────────────────
 self.addEventListener('notificationclick', e => {
   e.notification.close();
-  if (e.action === 'dismiss') return;
   e.waitUntil(
     clients.matchAll({ type: 'window', includeUncontrolled: true }).then(list => {
       const existing = list.find(c => c.url.includes('sales-petal'));
