@@ -285,6 +285,7 @@
     const str = now.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) + ' \u00b7 ' + now.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
     $('lastChecked').textContent = 'Last checked ' + str;
     localStorage.setItem('salepetal:lastChecked', str);
+    setTimeout(maybeAskNotifications, 1200);
   }
 
   loadState();
@@ -340,14 +341,7 @@
     };
   }
 
-  // Ask after first successful deal search
-  const _origRenderDeals = renderDeals;
-  // Hook into stampChecked to show notification ask after first result
-  const _origStamp = stampChecked;
-  async function stampChecked() {
-    await _origStamp();
-    setTimeout(maybeAskNotifications, 1200);
-  }
+
 </script>
 </body>
 </html>
