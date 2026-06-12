@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
@@ -105,7 +105,7 @@
   <p class="subtitle">Your favorite brands, on sale — all in one quiet place.</p>
 
   <div class="keybar" id="keybar">
-    <p><b>One-time setup:</b> paste your Google Gemini API key to fetch live deals. It's saved only in this browser. Get a free key at <a href="https://aistudio.google.com" target="_blank" rel="noopener" style="color:var(--clay)">aistudio.google.com</a>.</p>
+    <p><b>One-time setup:</b> paste your free Google Gemini API key. Get one at <a href="https://aistudio.google.com" target="_blank" rel="noopener" style="color:var(--clay)">aistudio.google.com</a> — saved only in this browser.</p>
     <div class="krow">
       <input id="keyInput" type="password" placeholder="AIza..." autocomplete="off" />
       <button id="keySave">Save</button>
@@ -138,8 +138,8 @@
 </div>
 
 <script>
-  const DEFAULT_BRANDS = ['Lancôme', 'Dr. Jart+', 'Hourglass', 'Patrick Ta'];
-  const GEMINI_MODEL = 'gemini-2.0-flash';
+  const DEFAULT_BRANDS = ['Lanc\u00f4me', 'Dr. Jart+', 'Hourglass', 'Patrick Ta'];
+  const GEMINI_MODEL = 'gemini-2.0-flash'; // change to any current model string you like
   let brands = [];
   let seen = new Set();
   let loading = false;
@@ -159,30 +159,30 @@
   }
 
   // ---------- API key ----------
-  function getKey() { return localStorage.getItem(‘salepetal:geminikey’) || ‘’; }
+  function getKey() { return localStorage.getItem('salepetal:geminikey') || ''; }
   function renderKeybar() {
-    const bar = $(‘keybar’);
+    const bar = $('keybar');
     if (getKey()) {
-      bar.classList.add(‘saved’);
-      bar.innerHTML = ‘<p>&#10003; <b>Gemini key saved.</b> You\’re ready to find sales. <a href="#" id="keyClear" style="color:#3E6B3E">Change key</a></p>’;
-      $(‘keyClear’).onclick = e => { e.preventDefault(); localStorage.removeItem(‘salepetal:geminikey’); location.reload(); };
+      bar.classList.add('saved');
+      bar.innerHTML = '<p>&#10003; <b>Gemini key saved.</b> You\u2019re ready to find sales. <a href="#" id="keyClear" style="color:#3E6B3E">Change key</a></p>';
+      $('keyClear').onclick = e => { e.preventDefault(); localStorage.removeItem('salepetal:geminikey'); location.reload(); };
     }
   }
-  $(‘keySave’).onclick = () => {
-    const v = $(‘keyInput’).value.trim();
+  $('keySave').onclick = () => {
+    const v = $('keyInput').value.trim();
     if (!v) return;
-    localStorage.setItem(‘salepetal:geminikey’, v);
+    localStorage.setItem('salepetal:geminikey', v);
     renderKeybar();
   };
 
   // ---------- Brand chips ----------
   function renderBrands() {
     const el = $('brands'); el.innerHTML = '';
-    if (!brands.length) { el.innerHTML = '<span style="font-size:13px;color:#B5A89B;font-weight:400;">No brands yet — add some below.</span>'; return; }
+    if (!brands.length) { el.innerHTML = '<span style="font-size:13px;color:#B5A89B;font-weight:400;">No brands yet \u2014 add some below.</span>'; return; }
     brands.forEach((b, i) => {
       const chip = document.createElement('span');
       chip.className = 'chip'; chip.style.animationDelay = (i * 0.03) + 's';
-      chip.innerHTML = escapeHtml(b) + ' <span class="x" data-i="' + i + '">×</span>';
+      chip.innerHTML = escapeHtml(b) + ' <span class="x" data-i="' + i + '">\u00d7</span>';
       el.appendChild(chip);
     });
     el.querySelectorAll('.x').forEach(x => x.onclick = () => { brands.splice(+x.dataset.i, 1); save('salepetal:brands', brands); renderBrands(); });
@@ -214,7 +214,7 @@
 
     try {
       const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${getKey()}`,
+        'https://generativelanguage.googleapis.com/v1beta/models/' + GEMINI_MODEL + ':generateContent?key=' + getKey(),
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -226,12 +226,12 @@
       );
       const data = await res.json();
       if (data.error) throw new Error(data.error.message || 'API error');
-      const text = (data.candidates?.[0]?.content?.parts || []).filter(p => p.text).map(p => p.text).join('\n').trim();
+      const text = (data.candidates?.[0]?.content?.parts || []).filter(function(p) { return p.text; }).map(function(p) { return p.text; }).join('\n').trim();
       renderDeals(parseDeals(text));
       stampChecked();
     } catch (err) {
       console.error(err);
-      $('deals').innerHTML = '<div class="state"><div class="mark">&#10047;</div><p>Couldn’t fetch deals.</p><p class="small">' + escapeHtml(err.message || 'Try again in a moment.') + '</p></div>';
+      $('deals').innerHTML = '<div class="state"><div class="mark">&#10047;</div><p>Couldn\u2019t fetch deals.</p><p class="small">' + escapeHtml(err.message || 'Try again in a moment.') + '</p></div>';
       $('count').textContent = '';
     } finally { loading = false; setLoadingUI(false); }
   }
@@ -245,7 +245,7 @@
   }
   function setLoadingUI(on) {
     const btn = $('findBtn'), label = $('findLabel'); btn.disabled = on;
-    if (on) { label.textContent = 'Searching…'; btn.insertAdjacentHTML('afterbegin', '<span class="spin"></span>'); }
+    if (on) { label.textContent = 'Searching\u2026'; btn.insertAdjacentHTML('afterbegin', '<span class="spin"></span>'); }
     else { const s = btn.querySelector('.spin'); if (s) s.remove(); label.textContent = 'Refresh Sales'; }
   }
   function showSkeletons() {
@@ -255,7 +255,7 @@
   }
   function renderDeals(deals) {
     const el = $('deals');
-    if (!deals.length) { el.innerHTML = '<div class="state"><div class="mark">&#10047;</div><p>No active sales found right now.</p><p class="small">Check back soon — new deals drop all the time.</p></div>'; $('count').textContent = ''; return; }
+    if (!deals.length) { el.innerHTML = '<div class="state"><div class="mark">&#10047;</div><p>No active sales found right now.</p><p class="small">Check back soon \u2014 new deals drop all the time.</p></div>'; $('count').textContent = ''; return; }
     const currentIds = [];
     deals.forEach(d => { const id = dealId(d); d._new = !seen.has(id); currentIds.push(id); });
     const newCount = deals.filter(d => d._new).length;
@@ -270,15 +270,15 @@
         + (d.details ? '<div class="deal-details">' + escapeHtml(d.details) + '</div>' : '')
         + (d.validUntil ? '<div class="deal-until">Through ' + escapeHtml(d.validUntil) + '</div>' : '')
         + '<div class="deal-foot"><span class="deal-retailer">' + escapeHtml(d.retailer || 'Online') + '</span>'
-        + '<a class="deal-link" href="' + escapeHtml(url) + '" target="_blank" rel="noopener">View deal →</a></div>';
+        + '<a class="deal-link" href="' + escapeHtml(url) + '" target="_blank" rel="noopener">View deal \u2192</a></div>';
       el.appendChild(card);
     });
-    $('count').innerHTML = '<b>' + deals.length + '</b> deal' + (deals.length !== 1 ? 's' : '') + (newCount ? ' · <b>' + newCount + '</b> new' : '');
+    $('count').innerHTML = '<b>' + deals.length + '</b> deal' + (deals.length !== 1 ? 's' : '') + (newCount ? ' \u00b7 <b>' + newCount + '</b> new' : '');
     currentIds.forEach(id => seen.add(id)); save('salepetal:seen', [...seen]);
   }
   function stampChecked() {
     const now = new Date();
-    const str = now.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) + ' · ' + now.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+    const str = now.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) + ' \u00b7 ' + now.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
     $('lastChecked').textContent = 'Last checked ' + str;
     localStorage.setItem('salepetal:lastChecked', str);
     setTimeout(maybeAskNotifications, 1200);
@@ -296,6 +296,8 @@
   }
 
   // ── Notification permission prompt ──────────────────────────────────────
+  // Show a gentle in-app banner asking for notification permission
+  // Only show if not yet decided and after user interacts (finds sales)
   function maybeAskNotifications() {
     if (!('Notification' in window)) return;
     if (Notification.permission !== 'default') return;
@@ -334,6 +336,8 @@
       banner.remove();
     };
   }
+
+
 </script>
 </body>
 </html>
