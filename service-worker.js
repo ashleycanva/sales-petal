@@ -1,4 +1,4 @@
-const CACHE = 'salepetal-v5';
+const CACHE = 'salepetal-v6';
 const NOTIF_STORE = 'salepetal-notif-v1';
 const ASSETS = [
   '/sales-petal/',
@@ -24,15 +24,19 @@ self.addEventListener('activate', e => {
   self.clients.claim();
 });
 
-// ── Fetch: serve from cache, fall back to network ─────────────────────────
+// ── Fetch: network-first for app shell + data, cache-first for static assets ─
 self.addEventListener('fetch', e => {
-  // Don't intercept API calls — always go live for those
-  if (e.request.url.includes('anthropic.com') || e.request.url.includes('fonts.g')) {
+  const url = e.request.url;
+  // Let font requests go straight through (CDN handles caching)
+  if (url.includes('fonts.googleapis.com') || url.includes('fonts.gstatic.com')) return;
+  // Network-first for the page itself and deals data — ensures updates show immediately
+  const isAppShell = url.endsWith('/sales-petal/') || url.includes('index.html') || url.includes('deals.json');
+  if (isAppShell) {
+    e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
     return;
   }
-  e.respondWith(
-    caches.match(e.request).then(cached => cached || fetch(e.request))
-  );
+  // Cache-first for everything else (icons, manifest)
+  e.respondWith(caches.match(e.request).then(cached => cached || fetch(e.request)));
 });
 
 // ── Push notifications ─────────────────────────────────────────────────────
