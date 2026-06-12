@@ -1,291 +1,559 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-<title>Sale Petal — beauty sale tracker</title>
-<link rel="manifest" href="manifest.json" />
-<meta name="theme-color" content="#C98B7A" />
-<meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="default" />
-<meta name="apple-mobile-web-app-title" content="Sale Petal" />
-<link rel="apple-touch-icon" href="icons/icon-192.png" />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
+<title>Sale Petal</title>
+<link rel="manifest" href="manifest.json"/>
+<meta name="theme-color" content="#C98B7A"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="Sale Petal"/>
+<link rel="apple-touch-icon" href="icons/icon-192.png"/>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <style>
-  :root {
-    --cream: #F6F0E9; --cream-deep: #EFE6DB; --paper: #FCF9F5;
-    --clay: #C98B7A; --clay-soft: #E2B7A8; --sand: #E8DCCB;
-    --ink: #2B2724; --ink-soft: #6E6259; --gold: #B79B6E; --line: #E3D6C7;
-    --shadow: rgba(120,95,78,0.12); --new: #B5704F;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  body { font-family: "Archivo", sans-serif; background: radial-gradient(120% 80% at 80% -10%, #F3E4D9 0%, transparent 55%), radial-gradient(110% 70% at 0% 5%, #F0E7DC 0%, transparent 50%), var(--cream); color: var(--ink); min-height: 100vh; line-height: 1.55; }
-  .wrap { max-width: 480px; margin: 0 auto; padding: 28px 22px 60px; }
-  .topbar { display: flex; align-items: center; justify-content: center; margin-bottom: 14px; }
-  .topbar .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--clay); margin: 0 8px; }
-  .kicker { font-size: 11px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--clay); font-weight: 600; }
-  h1 { font-family: "Anton", sans-serif; font-weight: 400; font-size: 62px; text-align: center; line-height: 0.9; margin: 4px 0 12px; letter-spacing: 0.01em; text-transform: uppercase; color: var(--ink); }
-  h1 em { font-style: normal; color: var(--clay); }
-  .subtitle { text-align: center; color: var(--ink-soft); font-size: 13.5px; margin-bottom: 28px; }
-  .section-label { font-size: 10.5px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--ink-soft); font-weight: 600; margin-bottom: 12px; display: block; }
-  .brands { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
-  .chip { display: inline-flex; align-items: center; gap: 7px; background: var(--paper); border: 1px solid var(--line); padding: 7px 13px; border-radius: 100px; font-size: 13px; font-weight: 500; color: var(--ink); animation: pop .3s ease backwards; }
-  @keyframes pop { from { opacity: 0; transform: scale(.85); } to { opacity: 1; transform: scale(1); } }
-  .chip .x { cursor: pointer; color: var(--ink-soft); font-size: 15px; line-height: 1; width: 14px; height: 14px; display: grid; place-items: center; border-radius: 50%; transition: all .15s; }
-  .chip .x:hover { color: var(--clay); transform: rotate(90deg); }
-  .add-row { display: flex; gap: 8px; margin-bottom: 26px; }
-  .add-row input { flex: 1; background: var(--paper); border: 1px solid var(--line); border-radius: 100px; padding: 12px 18px; font-family: "Archivo", sans-serif; font-size: 14px; color: var(--ink); outline: none; transition: border .2s; }
-  .add-row input:focus { border-color: var(--clay-soft); }
-  .add-row input::placeholder { color: #B5A89B; }
-  .add-btn { background: var(--ink); color: var(--cream); border: none; border-radius: 100px; width: 46px; font-size: 22px; cursor: pointer; flex-shrink: 0; line-height: 1; }
-  .add-btn:hover { background: var(--clay); }
-  .find-btn { width: 100%; background: linear-gradient(135deg, var(--clay) 0%, #B5704F 100%); color: #FFF9F3; border: none; border-radius: 16px; padding: 17px; font-family: "Anton", sans-serif; font-size: 19px; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; box-shadow: 0 10px 28px -8px rgba(181,112,79,0.5); transition: all .25s; display: flex; align-items: center; justify-content: center; gap: 12px; }
-  .find-btn:hover:not(:disabled) { transform: translateY(-2px); }
-  .find-btn:disabled { opacity: 0.55; cursor: default; }
-  .find-btn .spin { width: 17px; height: 17px; border: 2px solid rgba(255,255,255,.4); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .meta-row { display: flex; justify-content: space-between; align-items: center; margin: 30px 2px 16px; min-height: 18px; }
-  .results-count { font-size: 12px; color: var(--ink-soft); font-weight: 500; }
-  .results-count b { color: var(--clay); font-weight: 700; }
-  .last-checked { font-size: 11px; color: #B5A89B; }
-  .deals { display: flex; flex-direction: column; gap: 14px; }
-  .deal { background: var(--paper); border: 1px solid var(--line); border-radius: 20px; padding: 18px 19px; position: relative; overflow: hidden; box-shadow: 0 4px 18px -10px var(--shadow); animation: rise .45s ease backwards; transition: transform .2s, box-shadow .2s; }
-  .deal:hover { transform: translateY(-2px); box-shadow: 0 10px 26px -12px var(--shadow); }
-  @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
-  .deal::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: linear-gradient(var(--clay-soft), var(--gold)); }
-  .deal.priority::before { background: linear-gradient(var(--clay), #8B6B4A); }
-  .deal-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
-  .deal-brand { font-family: "Anton", sans-serif; font-size: 22px; letter-spacing: 0.01em; text-transform: uppercase; line-height: 1; color: var(--ink); }
-  .new-tag { background: var(--new); color: #FFF6F0; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; font-weight: 700; padding: 4px 9px; border-radius: 100px; flex-shrink: 0; margin-top: 3px; animation: glow 2s ease infinite; }
-  .your-tag { background: #8B6B4A; color: #FFF6F0; font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; padding: 4px 9px; border-radius: 100px; flex-shrink: 0; margin-top: 3px; }
-  @keyframes glow { 0%,100% { box-shadow: 0 0 0 0 rgba(181,112,79,.45); } 50% { box-shadow: 0 0 0 5px rgba(181,112,79,0); } }
-  .deal-product { font-size: 11px; color: #8B6B4A; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 5px; }
-  .deal-discount { display: inline-block; font-size: 13px; font-weight: 700; color: var(--clay); background: #F4E6DD; padding: 3px 11px; border-radius: 100px; margin-bottom: 9px; }
-  .deal-title { font-size: 14.5px; color: var(--ink); margin-bottom: 5px; font-weight: 500; }
-  .deal-details { font-size: 13px; color: var(--ink-soft); line-height: 1.5; }
-  .deal-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; padding-top: 13px; border-top: 1px solid var(--line); }
-  .deal-retailer { font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-soft); font-weight: 600; }
-  .deal-link { font-size: 12px; color: var(--clay); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; transition: gap .2s; }
-  .deal-link:hover { gap: 9px; }
-  .state { text-align: center; padding: 50px 20px; color: var(--ink-soft); }
-  .state .mark { font-size: 44px; color: var(--clay-soft); margin-bottom: 14px; line-height: 1; }
-  .state p { font-size: 14px; line-height: 1.6; }
-  .state .small { font-size: 12px; color: #B5A89B; margin-top: 6px; }
-  .skeleton { background: var(--paper); border: 1px solid var(--line); border-radius: 20px; padding: 18px 19px; }
-  .sk-line { height: 12px; border-radius: 6px; background: linear-gradient(90deg, var(--cream-deep) 25%, var(--sand) 50%, var(--cream-deep) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; margin-bottom: 10px; }
-  @keyframes shimmer { to { background-position: -200% 0; } }
-  .footnote { text-align: center; font-size: 11px; color: #BCAE9F; margin-top: 34px; line-height: 1.6; }
+:root{
+  --cream:#F6F0E9;--cream-deep:#EFE6DB;--paper:#FCF9F5;
+  --clay:#C98B7A;--clay-soft:#E2B7A8;--sand:#E8DCCB;
+  --ink:#2B2724;--ink-soft:#6E6259;--gold:#B79B6E;--line:#E3D6C7;
+  --shadow:rgba(120,95,78,0.12);--alert:#8B6B4A;--sale:#2D7A4F;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:"Archivo",sans-serif;background:radial-gradient(120% 80% at 80% -10%,#F3E4D9 0%,transparent 55%),radial-gradient(110% 70% at 0% 5%,#F0E7DC 0%,transparent 50%),var(--cream);color:var(--ink);min-height:100vh;line-height:1.55}
+.wrap{max-width:480px;margin:0 auto;padding:0 0 80px}
+
+/* ── Header ── */
+.header{padding:24px 22px 0;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:"Anton",sans-serif;font-size:32px;text-transform:uppercase;letter-spacing:.02em;color:var(--ink)}
+.logo em{font-style:normal;color:var(--clay)}
+.header-right{display:flex;align-items:center;gap:10px}
+.icon-btn{background:none;border:1px solid var(--line);border-radius:100px;width:38px;height:38px;display:grid;place-items:center;cursor:pointer;color:var(--ink-soft);font-size:17px;transition:all .2s}
+.icon-btn:hover{background:var(--sand);color:var(--ink)}
+.last-updated{padding:8px 22px 0;font-size:11px;color:#B5A89B}
+
+/* ── Settings panel ── */
+.settings-panel{margin:16px 22px 0;background:var(--paper);border:1px solid var(--line);border-radius:18px;overflow:hidden;display:none}
+.settings-panel.open{display:block}
+.settings-inner{padding:18px}
+.settings-title{font-size:11px;letter-spacing:.3em;text-transform:uppercase;font-weight:700;color:var(--ink-soft);margin-bottom:14px}
+.settings-row{display:flex;gap:8px;margin-bottom:10px;align-items:center}
+.settings-row label{font-size:12px;color:var(--ink-soft);width:120px;flex-shrink:0}
+.settings-row input{flex:1;background:var(--cream);border:1px solid var(--line);border-radius:100px;padding:9px 14px;font-family:"Archivo",sans-serif;font-size:13px;color:var(--ink);outline:none}
+.settings-row input:focus{border-color:var(--clay-soft)}
+.settings-save{background:var(--ink);color:var(--cream);border:none;border-radius:100px;padding:9px 18px;font-family:"Archivo",sans-serif;font-size:13px;font-weight:600;cursor:pointer}
+.settings-save:hover{background:var(--clay)}
+.settings-hint{font-size:11px;color:#B5A89B;line-height:1.5;margin-top:10px}
+.settings-hint a{color:var(--clay)}
+
+/* ── Section ── */
+.section{padding:28px 22px 0}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.section-title{font-family:"Anton",sans-serif;font-size:22px;text-transform:uppercase;letter-spacing:.03em;color:var(--ink)}
+.section-count{font-size:12px;color:var(--ink-soft);font-weight:600}
+
+/* ── Add row ── */
+.add-form{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:20px}
+.add-form input{width:100%;background:var(--cream);border:1px solid var(--line);border-radius:100px;padding:11px 16px;font-family:"Archivo",sans-serif;font-size:14px;color:var(--ink);outline:none;margin-bottom:8px;display:block}
+.add-form input:focus{border-color:var(--clay-soft)}
+.add-form input::placeholder{color:#B5A89B}
+.add-form input:last-of-type{margin-bottom:10px}
+.add-form-row{display:flex;gap:8px}
+.add-form-row input{margin-bottom:0;flex:1}
+.add-submit{background:var(--ink);color:var(--cream);border:none;border-radius:100px;padding:11px 20px;font-family:"Archivo",sans-serif;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.add-submit:hover{background:var(--clay)}
+
+/* ── Cards ── */
+.cards{display:flex;flex-direction:column;gap:14px}
+
+/* Product card */
+.pcard{background:var(--paper);border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:0 4px 18px -10px var(--shadow);animation:rise .4s ease backwards}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.pcard-head{padding:16px 18px 12px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.pcard-name{font-size:15px;font-weight:700;color:var(--ink);line-height:1.3}
+.pcard-brand{font-size:11px;color:var(--ink-soft);margin-top:2px;font-weight:500}
+.pcard-remove{background:none;border:none;color:#C5B8AA;cursor:pointer;font-size:18px;line-height:1;padding:2px;flex-shrink:0}
+.pcard-remove:hover{color:var(--clay)}
+
+/* Brand alert */
+.brand-alert{margin:0 18px 12px;background:#FFF5EE;border:1px solid #D4A88A;border-radius:12px;padding:10px 13px;display:flex;gap:9px;align-items:flex-start}
+.alert-icon{font-size:15px;flex-shrink:0;margin-top:1px}
+.alert-text{font-size:12.5px;color:var(--alert);font-weight:600;line-height:1.45}
+.alert-label{font-size:10px;letter-spacing:.15em;text-transform:uppercase;font-weight:700;color:var(--alert);opacity:.7;margin-bottom:2px}
+
+/* Retailers */
+.retailers{border-top:1px solid var(--line)}
+.retailer-row{padding:11px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line)}
+.retailer-row:last-child{border-bottom:none}
+.retailer-left{display:flex;align-items:center;gap:10px}
+.retailer-name{font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:var(--ink-soft);min-width:72px}
+.retailer-price{font-size:13px;color:var(--ink)}
+.sale-price{font-weight:700;color:var(--sale)}
+.orig-price{font-size:11px;color:#B5A89B;text-decoration:line-through;margin-left:4px}
+.discount-badge{background:#E6F4EC;color:var(--sale);font-size:10px;font-weight:700;padding:3px 8px;border-radius:100px;letter-spacing:.05em}
+.no-sale{font-size:12px;color:#B5A89B}
+.retailer-link{font-size:12px;color:var(--clay);text-decoration:none;font-weight:600;white-space:nowrap;display:flex;align-items:center;gap:4px}
+.retailer-link:hover{gap:7px}
+
+/* Brand card */
+.bcard{background:var(--paper);border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:0 4px 18px -10px var(--shadow);animation:rise .4s ease backwards}
+.bcard-head{padding:16px 18px 14px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.bcard-name{font-family:"Anton",sans-serif;font-size:26px;text-transform:uppercase;letter-spacing:.02em;color:var(--ink);line-height:1}
+.bcard-url{font-size:11px;color:#B5A89B;margin-top:4px}
+.bcard-remove{background:none;border:none;color:#C5B8AA;cursor:pointer;font-size:18px;line-height:1;padding:2px;flex-shrink:0}
+.bcard-remove:hover{color:var(--clay)}
+.bcard-deals{padding:0 18px 16px;display:flex;flex-direction:column;gap:8px}
+.deal-pill{display:flex;align-items:flex-start;gap:9px;background:var(--cream-deep);border-radius:12px;padding:10px 12px}
+.deal-pill-icon{font-size:14px;flex-shrink:0;margin-top:1px}
+.deal-pill-text{font-size:13px;color:var(--ink);font-weight:500;line-height:1.4}
+.deal-pill-code{display:inline-block;background:var(--ink);color:var(--cream);font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px;letter-spacing:.08em;margin-top:3px}
+.deal-pill-expiry{font-size:11px;color:#B5A89B;margin-top:2px}
+.bcard-no-deals{padding:0 18px 16px;font-size:13px;color:#B5A89B;font-style:italic}
+.bcard-foot{padding:12px 18px;border-top:1px solid var(--line);display:flex;justify-content:flex-end}
+.visit-link{font-size:12px;color:var(--clay);text-decoration:none;font-weight:700;display:inline-flex;align-items:center;gap:5px}
+.visit-link:hover{gap:8px}
+
+/* Empty states */
+.empty{text-align:center;padding:32px 20px;color:var(--ink-soft)}
+.empty .e-icon{font-size:36px;margin-bottom:10px;color:var(--clay-soft)}
+.empty p{font-size:13px;line-height:1.6}
+
+/* Refresh button */
+.refresh-bar{position:fixed;bottom:0;left:0;right:0;padding:12px 22px;background:rgba(246,240,233,.9);backdrop-filter:blur(12px);border-top:1px solid var(--line);display:flex;justify-content:center}
+.refresh-btn{background:linear-gradient(135deg,var(--clay),#B5704F);color:#FFF9F3;border:none;border-radius:14px;padding:15px 40px;font-family:"Anton",sans-serif;font-size:18px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:10px;box-shadow:0 8px 24px -8px rgba(181,112,79,.5);transition:all .2s}
+.refresh-btn:hover:not(:disabled){transform:translateY(-2px)}
+.refresh-btn:disabled{opacity:.55;cursor:default}
+.spin{width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Toast */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);padding:10px 20px;border-radius:100px;font-size:13px;font-weight:600;z-index:9999;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.2);animation:rise .3s ease}
+
+/* Notif banner */
+.notif-banner{position:fixed;bottom:76px;left:50%;transform:translateX(-50%);width:calc(100% - 44px);max-width:436px;background:#2B2724;color:#F6F0E9;border-radius:18px;padding:16px 18px;display:flex;align-items:center;gap:14px;box-shadow:0 12px 40px -10px rgba(43,39,36,.5);font-size:13.5px;z-index:998;animation:rise .4s ease}
+
+.sk-card{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:18px}
+.sk-line{height:11px;border-radius:6px;background:linear-gradient(90deg,var(--cream-deep) 25%,var(--sand) 50%,var(--cream-deep) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;margin-bottom:9px}
+@keyframes shimmer{to{background-position:-200% 0}}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="topbar"><span class="dot"></span><span class="kicker">Curated Beauty Sales</span><span class="dot"></span></div>
-  <h1>Sale <em>Petal</em></h1>
-  <p class="subtitle">Your favorite brands, on sale &mdash; all in one quiet place.</p>
 
-  <span class="section-label">My Tracked Products</span>
-  <p style="font-size:12px;color:#9A9080;margin:-6px 0 12px">Type any brand or product you want to watch &mdash; deals matching your list get highlighted.</p>
-  <div class="brands" id="brands"></div>
-  <div class="add-row">
-    <input id="brandInput" type="text" placeholder="e.g. Charlotte Tilbury, Dyson Airwrap&hellip;" autocomplete="off" />
-    <button class="add-btn" id="addBtn">+</button>
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">Sale <em>Petal</em></div>
+    <div class="header-right">
+      <button class="icon-btn" id="settingsBtn" title="Settings">&#9881;</button>
+    </div>
+  </div>
+  <div class="last-updated" id="lastUpdated"></div>
+
+  <!-- Settings panel -->
+  <div class="settings-panel" id="settingsPanel">
+    <div class="settings-inner">
+      <div class="settings-title">Settings</div>
+      <div class="settings-row">
+        <label>GitHub Token</label>
+        <input type="password" id="patInput" placeholder="github_pat_..."/>
+      </div>
+      <button class="settings-save" id="savePat">Save</button>
+      <div class="settings-hint">
+        Required to add/remove products and brands.<br>
+        <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Generate token</a>
+        &rarr; select <b>sales-petal</b> repo &rarr; Contents: Read &amp; Write.
+      </div>
+    </div>
   </div>
 
-  <button class="find-btn" id="findBtn"><span id="findLabel">Refresh Deals</span></button>
-
-  <div class="meta-row">
-    <span class="results-count" id="count"></span>
-    <span class="last-checked" id="lastChecked"></span>
+  <!-- Section 1: Favorite Products -->
+  <div class="section">
+    <div class="section-head">
+      <span class="section-title">Favorite Products</span>
+      <span class="section-count" id="productCount"></span>
+    </div>
+    <div class="add-form" id="addProductForm">
+      <div class="add-form-row">
+        <input id="productNameInput" placeholder="Product name (e.g. Pillow Talk Lipstick)"/>
+        <input id="productBrandInput" placeholder="Brand" style="max-width:140px"/>
+      </div>
+      <div style="margin-top:8px;display:flex;justify-content:flex-end">
+        <button class="add-submit" id="addProductBtn">+ Add Product</button>
+      </div>
+    </div>
+    <div class="cards" id="productsGrid">
+      <div class="sk-card"><div class="sk-line" style="width:55%"></div><div class="sk-line" style="width:35%"></div><div class="sk-line" style="width:70%"></div></div>
+      <div class="sk-card"><div class="sk-line" style="width:48%"></div><div class="sk-line" style="width:30%"></div><div class="sk-line" style="width:65%"></div></div>
+    </div>
   </div>
 
-  <div class="deals" id="deals">
-    <div class="skeleton"><div class="sk-line" style="width:40%"></div><div class="sk-line" style="width:28%"></div><div class="sk-line" style="width:80%"></div></div>
-    <div class="skeleton"><div class="sk-line" style="width:35%"></div><div class="sk-line" style="width:22%"></div><div class="sk-line" style="width:70%"></div></div>
-    <div class="skeleton"><div class="sk-line" style="width:45%"></div><div class="sk-line" style="width:30%"></div><div class="sk-line" style="width:75%"></div></div>
+  <!-- Section 2: Brand Deals -->
+  <div class="section" style="margin-top:36px">
+    <div class="section-head">
+      <span class="section-title">Brand Deals</span>
+      <span class="section-count" id="brandCount"></span>
+    </div>
+    <div class="add-form">
+      <input id="brandNameInput" placeholder="Brand name (e.g. Charlotte Tilbury)"/>
+      <input id="brandUrlInput" placeholder="Homepage URL (e.g. https://charlottetilbury.com)"/>
+      <div style="display:flex;justify-content:flex-end">
+        <button class="add-submit" id="addBrandBtn">+ Add Brand</button>
+      </div>
+    </div>
+    <div class="cards" id="brandsGrid">
+      <div class="sk-card"><div class="sk-line" style="width:45%"></div><div class="sk-line" style="width:60%"></div><div class="sk-line" style="width:40%"></div></div>
+      <div class="sk-card"><div class="sk-line" style="width:50%"></div><div class="sk-line" style="width:55%"></div></div>
+    </div>
   </div>
 
-  <p class="footnote">Deals are checked automatically every 4 hours.<br>Always confirm the price on the retailer&rsquo;s site before buying.</p>
 </div>
+
+<!-- Refresh -->
+<div class="refresh-bar">
+  <button class="refresh-btn" id="refreshBtn"><span id="refreshLabel">Refresh Deals</span></button>
+</div>
+
 <script>
-var DEFAULT_KEYWORDS = [];
-var keywords = [];
-var seen = new Set();
-var loading = false;
-function $(id) { return document.getElementById(id); }
-function esc(s) { return String(s).replace(/[&<>"]/g, function(c) { return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
-function load(k, fb) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : fb; } catch(e) { return fb; } }
-function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {} }
-function dealId(d) { return (d.brand+"|"+d.retailer+"|"+(d.title||"")).toLowerCase().replace(/\s+/g,""); }
+var REPO = 'ashleycanva/sales-petal';
+var BASE = '/sales-petal';
+var config = {products: [], brands: []};
+var deals = {products: [], brands: []};
+var syncing = false;
 
-function matchedKeywords(d) {
-  if (!keywords.length) return [];
-  var haystack = ((d.brand||"")+" "+(d.title||"")+" "+(d.details||"")).toLowerCase();
-  return keywords.filter(function(kw) { return haystack.indexOf(kw.toLowerCase()) !== -1; });
+function ge(id){ return document.getElementById(id); }
+function esc(s){ return String(s||'').replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+function showToast(msg, ok){
+  var t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  t.style.background = ok ? '#2B2724' : '#B5704F';
+  t.style.color = '#F6F0E9';
+  document.body.appendChild(t);
+  setTimeout(function(){ t.remove(); }, 2800);
 }
 
-function loadState() {
-  keywords = load("salepetal:keywords", DEFAULT_KEYWORDS.slice());
-  seen = new Set(load("salepetal:seen", []));
-  var lc = localStorage.getItem("salepetal:lastChecked");
-  if (lc) $("lastChecked").textContent = lc;
-  renderKeywords();
-}
-
-function renderKeywords() {
-  var el = $("brands"); el.innerHTML = "";
-  if (!keywords.length) { el.innerHTML = "<span style=\"font-size:13px;color:#B5A89B\">No products tracked yet &mdash; add one above.</span>"; return; }
-  keywords.forEach(function(b, i) {
-    var chip = document.createElement("span");
-    chip.className = "chip"; chip.style.animationDelay = (i*0.03)+"s";
-    chip.innerHTML = esc(b) + " <span class=\"x\" data-i=\""+i+"\">×</span>";
-    el.appendChild(chip);
-  });
-  el.querySelectorAll(".x").forEach(function(x) {
-    x.onclick = function() { keywords.splice(+x.dataset.i,1); save("salepetal:keywords",keywords); renderKeywords(); loadDeals(false); };
-  });
-}
-
-function addKeyword() {
-  var v = $("brandInput").value.trim(); if (!v) return;
-  if (!keywords.some(function(b) { return b.toLowerCase()===v.toLowerCase(); })) { keywords.push(v); save("salepetal:keywords",keywords); renderKeywords(); loadDeals(false); }
-  $("brandInput").value = ""; $("brandInput").focus();
-}
-$("addBtn").onclick = addKeyword;
-$("brandInput").addEventListener("keydown", function(e) { if (e.key==="Enter") addKeyword(); });
-$("findBtn").onclick = function() { loading = false; loadDeals(true); };
-
-function showSkeletons() {
-  var h = "";
-  for (var i=0;i<3;i++) h += "<div class=\"skeleton\"><div class=\"sk-line\" style=\"width:45%\"></div><div class=\"sk-line\" style=\"width:30%\"></div><div class=\"sk-line\" style=\"width:80%\"></div></div>";
-  $("deals").innerHTML = h; $("count").textContent = "";
-}
-
-function renderDeals(deals) {
-  var el = $("deals");
-  if (!deals.length) {
-    el.innerHTML = "<div class=\"state\"><div class=\"mark\">&#10047;</div><p>No deals found right now.</p><p class=\"small\">Deals are checked every 4 hours &mdash; check back soon.</p></div>";
-    $("count").textContent = ""; return;
+/* ── Settings ── */
+ge('settingsBtn').onclick = function(){
+  var p = ge('settingsPanel');
+  p.classList.toggle('open');
+  if(p.classList.contains('open') && localStorage.getItem('gh-pat')){
+    ge('patInput').value = localStorage.getItem('gh-pat');
   }
-  var currentIds = [];
-  deals.forEach(function(d) { var id=dealId(d); d._new=!seen.has(id); currentIds.push(id); });
-  var newCount = deals.filter(function(d){return d._new;}).length;
-  el.innerHTML = "";
-  deals.forEach(function(d, i) {
-    var kw = matchedKeywords(d);
-    var scraperMatches = d.matched_products && d.matched_products.length > 0 ? d.matched_products : [];
-    var allMatches = scraperMatches.concat(kw.filter(function(k){ return scraperMatches.indexOf(k)===-1; }));
-    var priority = allMatches.length > 0;
-    var card = document.createElement("div");
-    card.className = "deal" + (priority ? " priority" : "");
-    card.style.animationDelay = (i*0.05)+"s";
-    var url = d.url && /^https?:\/\//i.test(d.url) ? d.url : "#";
-    var tag = priority ? "<span class=\"your-tag\">Your Product</span>" : (d._new ? "<span class=\"new-tag\">New</span>" : "");
-    var productLine = priority ? "<div class=\"deal-product\">&#9733; "+esc(allMatches.join(", "))+"</div>" : "";
+};
+ge('savePat').onclick = function(){
+  var v = ge('patInput').value.trim();
+  if(!v){ showToast('Paste your GitHub token first', false); return; }
+  localStorage.setItem('gh-pat', v);
+  showToast('Token saved', true);
+  ge('settingsPanel').classList.remove('open');
+};
+
+/* ── GitHub API ── */
+async function githubGet(path){
+  var pat = localStorage.getItem('gh-pat');
+  var headers = {'Accept':'application/vnd.github+json'};
+  if(pat) headers['Authorization'] = 'Bearer ' + pat;
+  var r = await fetch('https://api.github.com/repos/' + REPO + '/contents/' + path, {headers: headers});
+  if(!r.ok) throw new Error('GitHub GET ' + r.status);
+  return r.json();
+}
+async function githubPut(path, content, sha, message){
+  var pat = localStorage.getItem('gh-pat');
+  if(!pat) throw new Error('No GitHub token. Add it in Settings.');
+  var b64 = btoa(unescape(encodeURIComponent(JSON.stringify(content, null, 2))));
+  var r = await fetch('https://api.github.com/repos/' + REPO + '/contents/' + path, {
+    method: 'PUT',
+    headers: {
+      'Authorization': 'Bearer ' + pat,
+      'Accept': 'application/vnd.github+json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({message: message, content: b64, sha: sha})
+  });
+  if(!r.ok){
+    var err = await r.json().catch(function(){ return {}; });
+    throw new Error(err.message || 'GitHub PUT ' + r.status);
+  }
+  return r.json();
+}
+async function saveConfig(msg){
+  if(syncing){ showToast('Already syncing...', false); return; }
+  syncing = true;
+  try {
+    var file = await githubGet('user-config.json');
+    await githubPut('user-config.json', config, file.sha, msg || 'update config');
+    showToast('Saved to GitHub', true);
+  } catch(e) {
+    showToast(e.message, false);
+    throw e;
+  } finally {
+    syncing = false;
+  }
+}
+
+/* ── Render products ── */
+function renderProducts(){
+  var el = ge('productsGrid');
+  var countEl = ge('productCount');
+  var prods = config.products || [];
+  countEl.textContent = prods.length + ' tracked';
+
+  if(!prods.length){
+    el.innerHTML = '<div class="empty"><div class="e-icon">&#10047;</div><p>No products yet.<br>Add one above.</p></div>';
+    return;
+  }
+
+  var dealsMap = {};
+  (deals.products || []).forEach(function(d){ dealsMap[norm(d.name)] = d; });
+
+  el.innerHTML = '';
+  prods.forEach(function(p, i){
+    var d = dealsMap[norm(p.name)] || {};
+    var retailers = d.retailers || [];
+    var brandAlert = d.brand_promo_alert || '';
+    var card = document.createElement('div');
+    card.className = 'pcard';
+    card.style.animationDelay = (i*0.06) + 's';
+
+    var alertHtml = '';
+    if(brandAlert){
+      alertHtml = '<div class="brand-alert">'
+        + '<span class="alert-icon">&#128276;</span>'
+        + '<div><div class="alert-label">' + esc(p.brand) + ' Promo</div>'
+        + '<div class="alert-text">' + esc(brandAlert) + '</div></div>'
+        + '</div>';
+    }
+
+    var retailersHtml = '';
+    if(retailers.length){
+      retailersHtml = '<div class="retailers">';
+      retailers.forEach(function(r){
+        var priceHtml = '';
+        if(r.on_sale && r.sale_price){
+          priceHtml = '<span class="sale-price">' + esc(r.sale_price) + '</span>'
+            + (r.original_price ? '<span class="orig-price">' + esc(r.original_price) + '</span>' : '')
+            + (r.discount ? ' <span class="discount-badge">' + esc(r.discount) + '</span>' : '');
+        } else if(r.original_price){
+          priceHtml = '<span class="retailer-price">' + esc(r.original_price) + '</span>';
+        } else {
+          priceHtml = '<span class="no-sale">Not on sale</span>';
+        }
+        var linkHtml = r.url ? '<a class="retailer-link" href="' + esc(r.url) + '" target="_blank" rel="noopener">View &#8594;</a>' : '';
+        retailersHtml += '<div class="retailer-row">'
+          + '<div class="retailer-left"><span class="retailer-name">' + esc(r.retailer) + '</span>' + priceHtml + '</div>'
+          + linkHtml
+          + '</div>';
+      });
+      retailersHtml += '</div>';
+    } else {
+      retailersHtml = '<div class="retailers"><div class="retailer-row"><span class="no-sale">Checking prices&hellip;</span></div></div>';
+    }
+
     card.innerHTML =
-      "<div class=\"deal-top\"><span class=\"deal-brand\">"+esc(d.brand)+"</span>"+tag+"</div>"
-      +productLine
-      +(d.discount?"<span class=\"deal-discount\">"+esc(d.discount)+"</span>":"")
-      +(d.title?"<div class=\"deal-title\">"+esc(d.title)+"</div>":"")
-      +(d.details?"<div class=\"deal-details\">"+esc(d.details)+"</div>":"")
-      +"<div class=\"deal-foot\"><span class=\"deal-retailer\">"+esc(d.retailer||"Online")+"</span>"
-      +"<a class=\"deal-link\" href=\""+url+"\" target=\"_blank\" rel=\"noopener\">View deal &#8594;</a></div>";
+      '<div class="pcard-head">'
+      + '<div><div class="pcard-name">' + esc(p.name) + '</div>'
+      + '<div class="pcard-brand">' + esc(p.brand) + '</div></div>'
+      + '<button class="pcard-remove" data-i="' + i + '" title="Remove">&#215;</button>'
+      + '</div>'
+      + alertHtml
+      + retailersHtml;
+
     el.appendChild(card);
   });
-  $("count").innerHTML = "<b>"+deals.length+"</b> deal"+(deals.length!==1?"s":"")+(newCount?" &middot; <b>"+newCount+"</b> new":"");
-  currentIds.forEach(function(id){seen.add(id);}); save("salepetal:seen", Array.from(seen));
-}
 
-function showToast(msg, ok) {
-  var t = document.createElement("div");
-  t.textContent = msg;
-  t.style.cssText = "position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:"+(ok?"#2B2724":"#B5704F")+";color:#F6F0E9;padding:10px 20px;border-radius:100px;font-size:13px;font-weight:600;z-index:9999;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.25);";
-  document.body.appendChild(t);
-  setTimeout(function(){ t.remove(); }, 2500);
-}
-
-async function loadDeals(showSpinner) {
-  if (loading) return;
-  loading = true;
-  var btn = $("findBtn"), label = $("findLabel");
-  btn.disabled = true;
-  if (showSpinner) { label.textContent = "Checking..."; btn.insertAdjacentHTML("afterbegin","<span class=\"spin\"></span>"); showSkeletons(); }
-  try {
-    var r = await fetch("deals.json?nc="+Date.now(), {cache: "no-store"});
-    if (!r.ok) throw new Error("HTTP "+r.status);
-    var data = await r.json();
-    var deals = data.deals || [];
-    if (data.updatedAt) {
-      var d = new Date(data.updatedAt);
-      var str = "Updated "+d.toLocaleDateString(undefined,{month:"short",day:"numeric"})+" at "+d.toLocaleTimeString(undefined,{hour:"numeric",minute:"2-digit"});
-      $("lastChecked").textContent = str;
-      localStorage.setItem("salepetal:lastChecked", str);
-    }
-    deals.sort(function(a,b){
-      var am = ((a.matched_products||[]).length>0 || matchedKeywords(a).length>0) ? 1 : 0;
-      var bm = ((b.matched_products||[]).length>0 || matchedKeywords(b).length>0) ? 1 : 0;
-      return bm - am;
-    });
-    renderDeals(deals);
-    if (showSpinner) showToast("Deals refreshed - "+deals.length+" found", true);
-    setTimeout(maybeAskNotifications, 1200);
-  } catch(err) {
-    $("deals").innerHTML = "<div class=\"state\"><div class=\"mark\">&#10047;</div><p>Could not load deals.</p><p class=\"small\">"+err.message+"</p></div>";
-    if (showSpinner) showToast("Could not load: "+err.message, false);
-  } finally {
-    loading = false; btn.disabled = false;
-    var s = btn.querySelector(".spin"); if (s) s.remove();
-    label.textContent = "Refresh Deals";
-  }
-}
-
-loadState();
-loadDeals(false);
-setInterval(function(){loadDeals(false);}, 30*60*1000);
-
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", function() {
-    navigator.serviceWorker.register("service-worker.js")
-      .then(function(reg){ console.log("SW ok", reg.scope); })
-      .catch(function(err){ console.warn("SW failed:", err); });
+  el.querySelectorAll('.pcard-remove').forEach(function(btn){
+    btn.onclick = function(){
+      var i = +btn.dataset.i;
+      config.products.splice(i, 1);
+      renderProducts();
+      saveConfig('remove product').catch(function(){});
+    };
   });
 }
 
-async function registerPeriodicSync() {
-  try {
-    var reg = await navigator.serviceWorker.ready;
-    if ("periodicSync" in reg) {
-      await reg.periodicSync.register("check-deals", { minInterval: 4*60*60*1000 });
-      console.log("Periodic sync registered");
+/* ── Render brands ── */
+function renderBrands(){
+  var el = ge('brandsGrid');
+  var countEl = ge('brandCount');
+  var brds = config.brands || [];
+  countEl.textContent = brds.length + ' tracked';
+
+  if(!brds.length){
+    el.innerHTML = '<div class="empty"><div class="e-icon">&#10047;</div><p>No brands yet.<br>Add one above.</p></div>';
+    return;
+  }
+
+  var dealsMap = {};
+  (deals.brands || []).forEach(function(b){ dealsMap[norm(b.name)] = b; });
+
+  el.innerHTML = '';
+  brds.forEach(function(b, i){
+    var d = dealsMap[norm(b.name)] || {};
+    var dealList = d.deals || [];
+    var card = document.createElement('div');
+    card.className = 'bcard';
+    card.style.animationDelay = (i*0.06) + 's';
+
+    var dealsHtml = '';
+    if(dealList.length){
+      dealsHtml = '<div class="bcard-deals">';
+      dealList.forEach(function(deal){
+        var icon = {'promo_code':'&#127974;','bogo':'&#127873;','gwp':'&#127873;','sale_event':'&#128176;','free_shipping':'&#128230;'}[deal.type] || '&#10022;';
+        var codeHtml = deal.code ? '<div><span class="deal-pill-code">' + esc(deal.code) + '</span></div>' : '';
+        var expiryHtml = deal.expiry ? '<div class="deal-pill-expiry">Ends ' + esc(deal.expiry) + '</div>' : '';
+        dealsHtml += '<div class="deal-pill">'
+          + '<span class="deal-pill-icon">' + icon + '</span>'
+          + '<div><div class="deal-pill-text">' + esc(deal.text) + '</div>' + codeHtml + expiryHtml + '</div>'
+          + '</div>';
+      });
+      dealsHtml += '</div>';
+    } else if(d.summary){
+      dealsHtml = '<div class="bcard-deals"><div class="deal-pill"><span class="deal-pill-icon">&#10022;</span><div class="deal-pill-text">' + esc(d.summary) + '</div></div></div>';
+    } else {
+      dealsHtml = '<div class="bcard-no-deals">No active promotions found</div>';
     }
-  } catch(e) { console.warn("Periodic sync:", e); }
+
+    var visitHtml = (b.url || d.url) ? '<a class="visit-link" href="' + esc(b.url || d.url) + '" target="_blank" rel="noopener">Visit brand &#8594;</a>' : '';
+
+    card.innerHTML =
+      '<div class="bcard-head">'
+      + '<div><div class="bcard-name">' + esc(b.name) + '</div>'
+      + '<div class="bcard-url">' + esc((b.url||'').replace(/^https?:\/\//, '')) + '</div></div>'
+      + '<button class="bcard-remove" data-i="' + i + '" title="Remove">&#215;</button>'
+      + '</div>'
+      + dealsHtml
+      + (visitHtml ? '<div class="bcard-foot">' + visitHtml + '</div>' : '');
+
+    el.appendChild(card);
+  });
+
+  el.querySelectorAll('.bcard-remove').forEach(function(btn){
+    btn.onclick = function(){
+      var i = +btn.dataset.i;
+      config.brands.splice(i, 1);
+      renderBrands();
+      saveConfig('remove brand').catch(function(){});
+    };
+  });
 }
 
-function maybeAskNotifications() {
-  if (!("Notification" in window)) return;
-  if (Notification.permission !== "default") return;
-  if (localStorage.getItem("salepetal:notif-dismissed")) return;
-  var banner = document.createElement("div");
-  banner.style.cssText = "position:fixed;bottom:24px;left:50%;transform:translateX(-50%);width:calc(100% - 44px);max-width:436px;background:#2B2724;color:#F6F0E9;border-radius:18px;padding:16px 18px;display:flex;align-items:center;gap:14px;box-shadow:0 12px 40px -10px rgba(43,39,36,.55);font-family:Archivo,sans-serif;font-size:13.5px;z-index:999;animation:rise .4s ease;";
-  banner.innerHTML = "<span style=\"font-size:26px;flex-shrink:0\">🌸</span><span style=\"flex:1;line-height:1.45\">Get notified when <b style=\"color:#E2B7A8\">your products go on sale</b> &mdash; even when the app is closed.</span><div style=\"display:flex;flex-direction:column;gap:7px;flex-shrink:0\"><button id=\"notif-yes\" style=\"background:#C98B7A;color:#fff;border:none;border-radius:100px;padding:8px 15px;font-family:Archivo,sans-serif;font-weight:600;font-size:12px;cursor:pointer;white-space:nowrap\">Allow</button><button id=\"notif-no\" style=\"background:transparent;color:#9A9080;border:none;font-family:Archivo,sans-serif;font-size:11px;cursor:pointer\">Not now</button></div>";
+/* ── Add product ── */
+ge('addProductBtn').onclick = async function(){
+  var name = ge('productNameInput').value.trim();
+  var brand = ge('productBrandInput').value.trim();
+  if(!name){ showToast('Enter a product name', false); return; }
+  if(!brand){ showToast('Enter the brand name', false); return; }
+  config.products.push({name: name, brand: brand});
+  ge('productNameInput').value = '';
+  ge('productBrandInput').value = '';
+  renderProducts();
+  try { await saveConfig('add product: ' + name); }
+  catch(e){ config.products.pop(); renderProducts(); }
+};
+ge('productNameInput').addEventListener('keydown', function(e){ if(e.key==='Enter') ge('productBrandInput').focus(); });
+ge('productBrandInput').addEventListener('keydown', function(e){ if(e.key==='Enter') ge('addProductBtn').click(); });
+
+/* ── Add brand ── */
+ge('addBrandBtn').onclick = async function(){
+  var name = ge('brandNameInput').value.trim();
+  var url = ge('brandUrlInput').value.trim();
+  if(!name){ showToast('Enter a brand name', false); return; }
+  if(!url){ showToast('Enter the brand homepage URL', false); return; }
+  if(!/^https?:\/\//i.test(url)) url = 'https://' + url;
+  config.brands.push({name: name, url: url});
+  ge('brandNameInput').value = '';
+  ge('brandUrlInput').value = '';
+  renderBrands();
+  try { await saveConfig('add brand: ' + name); }
+  catch(e){ config.brands.pop(); renderBrands(); }
+};
+ge('brandNameInput').addEventListener('keydown', function(e){ if(e.key==='Enter') ge('brandUrlInput').focus(); });
+ge('brandUrlInput').addEventListener('keydown', function(e){ if(e.key==='Enter') ge('addBrandBtn').click(); });
+
+/* ── Load data ── */
+var refreshing = false;
+async function loadAll(showSpinner){
+  if(refreshing) return;
+  refreshing = true;
+  var btn = ge('refreshBtn'), lbl = ge('refreshLabel');
+  btn.disabled = true;
+  if(showSpinner){ lbl.textContent = 'Checking...'; btn.insertAdjacentHTML('afterbegin','<span class="spin"></span>'); }
+  try {
+    var nc = Date.now();
+    var [cfgR, dealsR] = await Promise.all([
+      fetch(BASE + '/user-config.json?nc=' + nc, {cache:'no-store'}),
+      fetch(BASE + '/deals.json?nc=' + nc, {cache:'no-store'})
+    ]);
+    if(cfgR.ok) config = await cfgR.json();
+    if(dealsR.ok){
+      deals = await dealsR.json();
+      if(deals.updatedAt){
+        var d = new Date(deals.updatedAt);
+        ge('lastUpdated').textContent = 'Last checked ' + d.toLocaleDateString(undefined,{month:'short',day:'numeric'}) + ' at ' + d.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'});
+      }
+    }
+    renderProducts();
+    renderBrands();
+    if(showSpinner) showToast('Deals refreshed', true);
+    setTimeout(maybeAskNotifications, 1200);
+  } catch(e) {
+    showToast('Could not load: ' + e.message, false);
+  } finally {
+    refreshing = false;
+    btn.disabled = false;
+    var s = btn.querySelector('.spin'); if(s) s.remove();
+    lbl.textContent = 'Refresh Deals';
+  }
+}
+
+ge('refreshBtn').onclick = function(){ refreshing = false; loadAll(true); };
+
+function norm(s){ return String(s||'').toLowerCase().trim(); }
+
+/* ── Notifications ── */
+async function registerPeriodicSync(){
+  try {
+    var reg = await navigator.serviceWorker.ready;
+    if('periodicSync' in reg){
+      await reg.periodicSync.register('check-deals', {minInterval: 4*60*60*1000});
+    }
+  } catch(e){ console.warn('Periodic sync:', e); }
+}
+function maybeAskNotifications(){
+  if(!('Notification' in window)) return;
+  if(Notification.permission !== 'default') return;
+  if(localStorage.getItem('notif-dismissed')) return;
+  var banner = document.createElement('div');
+  banner.className = 'notif-banner';
+  banner.innerHTML = '<span style="font-size:24px;flex-shrink:0">&#127800;</span>'
+    + '<span style="flex:1;line-height:1.45">Get notified when your brands run a promo &mdash; even when the app is closed.</span>'
+    + '<div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">'
+    + '<button id="nb-yes" style="background:var(--clay);color:#fff;border:none;border-radius:100px;padding:8px 14px;font-family:Archivo,sans-serif;font-weight:700;font-size:12px;cursor:pointer">Allow</button>'
+    + '<button id="nb-no" style="background:transparent;color:#9A9080;border:none;font-family:Archivo,sans-serif;font-size:11px;cursor:pointer">Not now</button>'
+    + '</div>';
   document.body.appendChild(banner);
-  document.getElementById("notif-yes").onclick = function() {
-    Notification.requestPermission().then(function(p) {
-      if (p === "granted") {
-        registerPeriodicSync();
-        banner.innerHTML = "<span style=\"font-size:22px\">✓</span><span style=\"flex:1\">Notifications on! You will be alerted when your products go on sale.</span>";
-        setTimeout(function(){ banner.remove(); }, 3000);
-      } else { banner.remove(); }
+  document.getElementById('nb-yes').onclick = function(){
+    Notification.requestPermission().then(function(p){
+      if(p==='granted'){ registerPeriodicSync(); }
+      banner.remove();
     });
   };
-  document.getElementById("notif-no").onclick = function() {
-    localStorage.setItem("salepetal:notif-dismissed","1");
+  document.getElementById('nb-no').onclick = function(){
+    localStorage.setItem('notif-dismissed','1');
     banner.remove();
   };
 }
+if(Notification.permission==='granted') registerPeriodicSync();
 
-if (Notification.permission === "granted") registerPeriodicSync();
+/* ── Service worker ── */
+if('serviceWorker' in navigator){
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('service-worker.js')
+      .then(function(r){ console.log('SW', r.scope); })
+      .catch(function(e){ console.warn('SW failed:', e); });
+  });
+}
+
+/* ── Boot ── */
+loadAll(false);
 </script>
 </body>
 </html>

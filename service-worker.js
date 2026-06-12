@@ -20,7 +20,6 @@ async function checkForNewDeals() {
     const r = await fetch('/sales-petal/deals.json?t=' + Date.now());
     if (!r.ok) return;
     const data = await r.json();
-    const deals = data.deals || [];
     const updatedAt = data.updatedAt || '';
 
     const store = await caches.open(NOTIF_STORE);
@@ -28,15 +27,27 @@ async function checkForNewDeals() {
     const lastNotified = prev ? await prev.text() : '';
     if (updatedAt && updatedAt === lastNotified) return;
 
-    const productMatches = deals.filter(d => d.matched_products && d.matched_products.length > 0);
+    const products = data.products || [];
+    const brands = data.brands || [];
+
+    // Products on sale anywhere
+    const onSale = products.filter(p => p.on_sale);
+    // Products with a brand promo alert
+    const withPromo = products.filter(p => p.brand_promo_alert && !p.on_sale);
+    // Brands with active deals
+    const brandsWithDeals = brands.filter(b => b.has_deals);
+
     let title, body;
-    if (productMatches.length > 0) {
-      const names = [...new Set(productMatches.flatMap(d => d.matched_products))];
+    if (onSale.length > 0) {
       title = 'Your products are on sale!';
-      body = names.slice(0, 2).join(', ') + (names.length > 2 ? ' + ' + (names.length - 2) + ' more' : '') + ' — tap to view';
-    } else if (deals.length > 0) {
-      title = 'Sale Petal';
-      body = deals.length + ' beauty deals found — tap to view';
+      const names = onSale.slice(0, 2).map(p => p.name);
+      body = names.join(', ') + (onSale.length > 2 ? ' + ' + (onSale.length - 2) + ' more' : '') + ' — tap to view';
+    } else if (withPromo.length > 0) {
+      title = 'Brand promo for your products!';
+      body = withPromo[0].brand + ': ' + withPromo[0].brand_promo_alert;
+    } else if (brandsWithDeals.length > 0) {
+      title = 'New brand promotions!';
+      body = brandsWithDeals.slice(0, 2).map(b => b.name).join(', ') + ' have active deals — tap to view';
     } else {
       return;
     }

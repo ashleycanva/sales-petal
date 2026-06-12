@@ -1,0 +1,16 @@
+{
+  "products": [
+    { "name": "Advanced Genifique Face Serum", "brand": "Lancome" },
+    { "name": "Advanced Genifique Night Cream", "brand": "Lancome" },
+    { "name": "Renergie H.P.N. 300-Peptide Cream", "brand": "Lancome" },
+    { "name": "Major Headlines Blush Duo", "brand": "Patrick Ta" },
+    { "name": "Veil Hydrating Skin Tint", "brand": "Hourglass" },
+    { "name": "Vanish Concealer", "brand": "Hourglass" }
+  ],
+  "brands": [
+    { "name": "Lancome", "url": "https://www.lancome-usa.com" },
+    { "name": "Dr. Jart+", "url": "https://www.drjart.com" },
+    { "name": "Hourglass", "url": "https://www.hourglasscosmetics.com" },
+    { "name": "Patrick Ta", "url": "https://patrickta.com" }
+  ]
+}
