@@ -5,554 +5,485 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
 <title>Sale Petal</title>
 <link rel="manifest" href="manifest.json"/>
-<meta name="theme-color" content="#C98B7A"/>
+<meta name="theme-color" content="#F7F1EB"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-title" content="Sale Petal"/>
 <link rel="apple-touch-icon" href="icons/icon-192.png"/>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css" rel="stylesheet"/>
 <style>
-:root{
-  --cream:#F6F0E9;--cream-deep:#EFE6DB;--paper:#FCF9F5;
-  --clay:#C98B7A;--clay-soft:#E2B7A8;--sand:#E8DCCB;
-  --ink:#2B2724;--ink-soft:#6E6259;--gold:#B79B6E;--line:#E3D6C7;
-  --shadow:rgba(120,95,78,0.12);--alert:#8B6B4A;--sale:#2D7A4F;
-}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{font-family:"Archivo",sans-serif;background:radial-gradient(120% 80% at 80% -10%,#F3E4D9 0%,transparent 55%),radial-gradient(110% 70% at 0% 5%,#F0E7DC 0%,transparent 50%),var(--cream);color:var(--ink);min-height:100vh;line-height:1.55}
-.wrap{max-width:480px;margin:0 auto;padding:0 0 80px}
+:root{
+  --bg:#F7F1EB;--surface:#FCF9F5;--line:#E3D6C7;--line-soft:#F0E8DF;
+  --ink:#2B2724;--ink2:#6E6259;--ink3:#B5A89B;
+  --clay:#C98B7A;--clay-light:#FFF5EE;--clay-border:#E8C9A8;
+  --sale:#2D7A4F;--sale-bg:#E6F4EC;
+  --alert:#8B6B4A;--code-bg:#2B2724;
+}
+html,body{height:100%;overflow:hidden}
+body{font-family:"Archivo",sans-serif;background:var(--bg);color:var(--ink);display:flex;flex-direction:column;max-width:480px;margin:0 auto}
 
-/* ── Header ── */
-.header{padding:24px 22px 0;display:flex;align-items:center;justify-content:space-between}
-.logo{font-family:"Anton",sans-serif;font-size:32px;text-transform:uppercase;letter-spacing:.02em;color:var(--ink)}
-.logo em{font-style:normal;color:var(--clay)}
-.header-right{display:flex;align-items:center;gap:10px}
-.icon-btn{background:none;border:1px solid var(--line);border-radius:100px;width:38px;height:38px;display:grid;place-items:center;cursor:pointer;color:var(--ink-soft);font-size:17px;transition:all .2s}
-.icon-btn:hover{background:var(--sand);color:var(--ink)}
-.last-updated{padding:8px 22px 0;font-size:11px;color:#B5A89B}
+/* ── Top bar ── */
+.topbar{padding:env(safe-area-inset-top,0) 18px 0;background:var(--bg);flex-shrink:0}
+.topbar-inner{display:flex;align-items:center;justify-content:space-between;padding:14px 0 4px}
+.logo{font-family:"Anton",sans-serif;font-size:28px;text-transform:uppercase;letter-spacing:.02em;color:var(--ink)}
+.logo span{color:var(--clay)}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.icon-btn{width:34px;height:34px;border-radius:50%;background:transparent;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink3);font-size:18px;transition:background .15s}
+.icon-btn:hover,.icon-btn:active{background:var(--line-soft)}
+.last-upd{font-size:11px;color:var(--ink3);padding-bottom:10px}
 
-/* ── Settings panel ── */
-.settings-panel{margin:16px 22px 0;background:var(--paper);border:1px solid var(--line);border-radius:18px;overflow:hidden;display:none}
-.settings-panel.open{display:block}
-.settings-inner{padding:18px}
-.settings-title{font-size:11px;letter-spacing:.3em;text-transform:uppercase;font-weight:700;color:var(--ink-soft);margin-bottom:14px}
-.settings-row{display:flex;gap:8px;margin-bottom:10px;align-items:center}
-.settings-row label{font-size:12px;color:var(--ink-soft);width:120px;flex-shrink:0}
-.settings-row input{flex:1;background:var(--cream);border:1px solid var(--line);border-radius:100px;padding:9px 14px;font-family:"Archivo",sans-serif;font-size:13px;color:var(--ink);outline:none}
-.settings-row input:focus{border-color:var(--clay-soft)}
-.settings-save{background:var(--ink);color:var(--cream);border:none;border-radius:100px;padding:9px 18px;font-family:"Archivo",sans-serif;font-size:13px;font-weight:600;cursor:pointer}
-.settings-save:hover{background:var(--clay)}
-.settings-hint{font-size:11px;color:#B5A89B;line-height:1.5;margin-top:10px}
-.settings-hint a{color:var(--clay)}
+/* ── Scroll area ── */
+.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 14px 16px}
 
-/* ── Section ── */
-.section{padding:28px 22px 0}
-.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-.section-title{font-family:"Anton",sans-serif;font-size:22px;text-transform:uppercase;letter-spacing:.03em;color:var(--ink)}
-.section-count{font-size:12px;color:var(--ink-soft);font-weight:600}
+/* ── Bottom nav ── */
+.bottomnav{flex-shrink:0;background:var(--surface);border-top:.5px solid var(--line);display:flex;padding:6px 0 calc(6px + env(safe-area-inset-bottom,0))}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:6px 0;background:none;border:none;transition:opacity .15s}
+.tab i{font-size:22px;transition:color .15s}
+.tab span{font-size:10px;font-weight:600;letter-spacing:.04em;transition:color .15s}
+.tab.on i,.tab.on span{color:var(--clay)}
+.tab:not(.on) i,.tab:not(.on) span{color:var(--ink3)}
 
-/* ── Add row ── */
-.add-form{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:20px}
-.add-form input{width:100%;background:var(--cream);border:1px solid var(--line);border-radius:100px;padding:11px 16px;font-family:"Archivo",sans-serif;font-size:14px;color:var(--ink);outline:none;margin-bottom:8px;display:block}
-.add-form input:focus{border-color:var(--clay-soft)}
-.add-form input::placeholder{color:#B5A89B}
-.add-form input:last-of-type{margin-bottom:10px}
-.add-form-row{display:flex;gap:8px}
-.add-form-row input{margin-bottom:0;flex:1}
-.add-submit{background:var(--ink);color:var(--cream);border:none;border-radius:100px;padding:11px 20px;font-family:"Archivo",sans-serif;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0}
-.add-submit:hover{background:var(--clay)}
+/* ── View ── */
+.view{display:none}
+.view.on{display:block}
 
-/* ── Cards ── */
-.cards{display:flex;flex-direction:column;gap:14px}
+/* ── Section label ── */
+.sec{font-size:10px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:var(--ink3);margin:18px 2px 10px;display:block}
 
-/* Product card */
-.pcard{background:var(--paper);border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:0 4px 18px -10px var(--shadow);animation:rise .4s ease backwards}
-@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-.pcard-head{padding:16px 18px 12px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
-.pcard-name{font-size:15px;font-weight:700;color:var(--ink);line-height:1.3}
-.pcard-brand{font-size:11px;color:var(--ink-soft);margin-top:2px;font-weight:500}
-.pcard-remove{background:none;border:none;color:#C5B8AA;cursor:pointer;font-size:18px;line-height:1;padding:2px;flex-shrink:0}
-.pcard-remove:hover{color:var(--clay)}
+/* ── Brand card ── */
+.bcard{background:var(--surface);border:.5px solid var(--line);border-radius:16px;margin-bottom:10px;overflow:hidden}
+.bcard-head{padding:13px 14px 0;display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.bcard-name{font-family:"Anton",sans-serif;font-size:19px;text-transform:uppercase;letter-spacing:.02em;color:var(--ink);line-height:1.1}
+.bcard-url{font-size:10px;color:var(--ink3);margin-top:3px}
+.visit-pill{display:inline-flex;align-items:center;gap:4px;background:var(--line-soft);border-radius:100px;padding:5px 11px;font-size:11px;font-weight:600;color:var(--ink2);text-decoration:none;white-space:nowrap;flex-shrink:0}
+.bcard-deals{padding:10px 14px 13px;display:flex;flex-direction:column;gap:7px}
+.deal-chip{background:var(--clay-light);border-radius:10px;padding:9px 11px;display:flex;align-items:flex-start;gap:8px}
+.deal-chip i{font-size:14px;color:var(--clay);flex-shrink:0;margin-top:1px}
+.dc-text{font-size:12.5px;font-weight:500;color:var(--ink);line-height:1.4}
+.dc-code{display:inline-flex;align-items:center;gap:5px;background:var(--code-bg);color:#F7F1EB;font-size:10px;font-weight:700;padding:3px 8px;border-radius:5px;letter-spacing:.08em;margin-top:4px;cursor:pointer}
+.dc-code i{font-size:11px;opacity:.6}
+.dc-expiry{font-size:10px;color:var(--ink3);margin-top:3px}
+.no-promo{padding:8px 14px 13px;font-size:12px;color:var(--ink3);font-style:italic}
 
-/* Brand alert */
-.brand-alert{margin:0 18px 12px;background:#FFF5EE;border:1px solid #D4A88A;border-radius:12px;padding:10px 13px;display:flex;gap:9px;align-items:flex-start}
-.alert-icon{font-size:15px;flex-shrink:0;margin-top:1px}
-.alert-text{font-size:12.5px;color:var(--alert);font-weight:600;line-height:1.45}
-.alert-label{font-size:10px;letter-spacing:.15em;text-transform:uppercase;font-weight:700;color:var(--alert);opacity:.7;margin-bottom:2px}
+/* ── Product card ── */
+.pcard{background:var(--surface);border:.5px solid var(--line);border-radius:16px;margin-bottom:10px;overflow:hidden}
+.pcard-head{padding:12px 14px 8px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.pcard-name{font-size:14px;font-weight:600;color:var(--ink);line-height:1.3}
+.pcard-brand{font-size:10.5px;color:var(--ink3);font-weight:500;margin-top:2px}
+.alert-bar{margin:0 14px 9px;background:var(--clay-light);border:.5px solid var(--clay-border);border-radius:10px;padding:8px 10px;display:flex;align-items:flex-start;gap:7px}
+.ab-icon{font-size:13px;color:var(--clay);flex-shrink:0;margin-top:1px}
+.ab-label{font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--clay);margin-bottom:2px}
+.ab-text{font-size:11.5px;font-weight:500;color:var(--alert);line-height:1.35}
+.retailers{border-top:.5px solid var(--line)}
+.ret-row{padding:9px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px;border-bottom:.5px solid var(--line-soft)}
+.ret-row:last-child{border-bottom:none}
+.ret-name{font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--ink3);width:62px;flex-shrink:0}
+.ret-prices{display:flex;align-items:center;gap:5px;flex:1}
+.sale-price{font-size:13px;font-weight:700;color:var(--sale)}
+.orig-price{font-size:11px;color:var(--ink3);text-decoration:line-through}
+.sale-badge{background:var(--sale-bg);color:var(--sale);font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:100px;letter-spacing:.04em}
+.reg-price{font-size:13px;color:var(--ink)}
+.no-sale{font-size:12px;color:var(--ink3)}
+.ret-link{font-size:11px;font-weight:600;color:var(--clay);text-decoration:none;display:flex;align-items:center;gap:3px;flex-shrink:0;white-space:nowrap}
+.ret-link i{font-size:12px}
 
-/* Retailers */
-.retailers{border-top:1px solid var(--line)}
-.retailer-row{padding:11px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line)}
-.retailer-row:last-child{border-bottom:none}
-.retailer-left{display:flex;align-items:center;gap:10px}
-.retailer-name{font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:var(--ink-soft);min-width:72px}
-.retailer-price{font-size:13px;color:var(--ink)}
-.sale-price{font-weight:700;color:var(--sale)}
-.orig-price{font-size:11px;color:#B5A89B;text-decoration:line-through;margin-left:4px}
-.discount-badge{background:#E6F4EC;color:var(--sale);font-size:10px;font-weight:700;padding:3px 8px;border-radius:100px;letter-spacing:.05em}
-.no-sale{font-size:12px;color:#B5A89B}
-.retailer-link{font-size:12px;color:var(--clay);text-decoration:none;font-weight:600;white-space:nowrap;display:flex;align-items:center;gap:4px}
-.retailer-link:hover{gap:7px}
+/* ── My List styles ── */
+.settings-box,.add-box{background:var(--surface);border:.5px solid var(--line);border-radius:14px;padding:13px;margin-bottom:10px}
+.field-label{font-size:10.5px;font-weight:600;color:var(--ink3);letter-spacing:.06em;margin-bottom:5px;display:block}
+.field-input{width:100%;background:var(--line-soft);border:none;border-radius:8px;padding:9px 12px;font-family:"Archivo",sans-serif;font-size:13px;color:var(--ink);outline:none;margin-bottom:6px;display:block}
+.field-input:focus{outline:1.5px solid var(--clay)}
+.field-input::placeholder{color:var(--ink3)}
+.field-input:last-of-type{margin-bottom:10px}
+.row-end{display:flex;justify-content:flex-end}
+.save-btn{background:var(--clay);color:#fff;border:none;border-radius:100px;padding:8px 18px;font-family:"Archivo",sans-serif;font-size:12.5px;font-weight:700;cursor:pointer}
+.save-btn:hover{opacity:.9}
+.add-btn{background:var(--ink);color:var(--bg);border:none;border-radius:100px;padding:8px 16px;font-family:"Archivo",sans-serif;font-size:12.5px;font-weight:700;cursor:pointer}
+.add-btn:hover{background:var(--clay)}
+.list-item{background:var(--surface);border:.5px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;margin-bottom:7px;animation:fadein .2s ease}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.li-name{font-size:13px;font-weight:600;color:var(--ink)}
+.li-sub{font-size:11px;color:var(--ink3);margin-top:1px}
+.li-remove{width:28px;height:28px;border-radius:50%;background:var(--line-soft);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;color:var(--ink3);font-size:14px}
+.li-remove:hover{background:#F4DEDE;color:#A33}
 
-/* Brand card */
-.bcard{background:var(--paper);border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:0 4px 18px -10px var(--shadow);animation:rise .4s ease backwards}
-.bcard-head{padding:16px 18px 14px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
-.bcard-name{font-family:"Anton",sans-serif;font-size:26px;text-transform:uppercase;letter-spacing:.02em;color:var(--ink);line-height:1}
-.bcard-url{font-size:11px;color:#B5A89B;margin-top:4px}
-.bcard-remove{background:none;border:none;color:#C5B8AA;cursor:pointer;font-size:18px;line-height:1;padding:2px;flex-shrink:0}
-.bcard-remove:hover{color:var(--clay)}
-.bcard-deals{padding:0 18px 16px;display:flex;flex-direction:column;gap:8px}
-.deal-pill{display:flex;align-items:flex-start;gap:9px;background:var(--cream-deep);border-radius:12px;padding:10px 12px}
-.deal-pill-icon{font-size:14px;flex-shrink:0;margin-top:1px}
-.deal-pill-text{font-size:13px;color:var(--ink);font-weight:500;line-height:1.4}
-.deal-pill-code{display:inline-block;background:var(--ink);color:var(--cream);font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px;letter-spacing:.08em;margin-top:3px}
-.deal-pill-expiry{font-size:11px;color:#B5A89B;margin-top:2px}
-.bcard-no-deals{padding:0 18px 16px;font-size:13px;color:#B5A89B;font-style:italic}
-.bcard-foot{padding:12px 18px;border-top:1px solid var(--line);display:flex;justify-content:flex-end}
-.visit-link{font-size:12px;color:var(--clay);text-decoration:none;font-weight:700;display:inline-flex;align-items:center;gap:5px}
-.visit-link:hover{gap:8px}
-
-/* Empty states */
-.empty{text-align:center;padding:32px 20px;color:var(--ink-soft)}
-.empty .e-icon{font-size:36px;margin-bottom:10px;color:var(--clay-soft)}
-.empty p{font-size:13px;line-height:1.6}
-
-/* Refresh button */
-.refresh-bar{position:fixed;bottom:0;left:0;right:0;padding:12px 22px;background:rgba(246,240,233,.9);backdrop-filter:blur(12px);border-top:1px solid var(--line);display:flex;justify-content:center}
-.refresh-btn{background:linear-gradient(135deg,var(--clay),#B5704F);color:#FFF9F3;border:none;border-radius:14px;padding:15px 40px;font-family:"Anton",sans-serif;font-size:18px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:10px;box-shadow:0 8px 24px -8px rgba(181,112,79,.5);transition:all .2s}
-.refresh-btn:hover:not(:disabled){transform:translateY(-2px)}
-.refresh-btn:disabled{opacity:.55;cursor:default}
-.spin{width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+/* ── Refresh button ── */
+.refresh-wrap{position:fixed;bottom:calc(60px + env(safe-area-inset-bottom,0));left:50%;transform:translateX(-50%);pointer-events:none;z-index:10}
+.refresh-btn{pointer-events:all;background:var(--ink);color:var(--bg);border:none;border-radius:100px;padding:11px 26px;font-family:"Archivo",sans-serif;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(43,39,36,.25);transition:transform .15s,opacity .15s}
+.refresh-btn:hover{transform:translateY(-1px)}
+.refresh-btn:disabled{opacity:.5;cursor:default}
+.spin{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* Toast */
-.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);padding:10px 20px;border-radius:100px;font-size:13px;font-weight:600;z-index:9999;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.2);animation:rise .3s ease}
+/* ── Toast ── */
+.toast{position:fixed;bottom:calc(70px + env(safe-area-inset-bottom,0));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 18px;border-radius:100px;font-size:12.5px;font-weight:600;z-index:999;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.2);animation:fadein .25s ease;pointer-events:none}
 
-/* Notif banner */
-.notif-banner{position:fixed;bottom:76px;left:50%;transform:translateX(-50%);width:calc(100% - 44px);max-width:436px;background:#2B2724;color:#F6F0E9;border-radius:18px;padding:16px 18px;display:flex;align-items:center;gap:14px;box-shadow:0 12px 40px -10px rgba(43,39,36,.5);font-size:13.5px;z-index:998;animation:rise .4s ease}
+/* ── Empty state ── */
+.empty{text-align:center;padding:30px 20px}
+.empty i{font-size:36px;color:var(--line);display:block;margin-bottom:8px}
+.empty p{font-size:13px;color:var(--ink3);line-height:1.6}
 
-.sk-card{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:18px}
-.sk-line{height:11px;border-radius:6px;background:linear-gradient(90deg,var(--cream-deep) 25%,var(--sand) 50%,var(--cream-deep) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;margin-bottom:9px}
+/* ── Skeleton ── */
+.sk{background:var(--surface);border:.5px solid var(--line);border-radius:16px;padding:16px;margin-bottom:10px}
+.sk-line{height:11px;border-radius:6px;background:linear-gradient(90deg,var(--line-soft) 25%,var(--line) 50%,var(--line-soft) 75%);background-size:200% 100%;animation:shimmer 1.3s infinite;margin-bottom:8px}
 @keyframes shimmer{to{background-position:-200% 0}}
 </style>
 </head>
 <body>
-<div class="wrap">
 
-  <!-- Header -->
-  <div class="header">
-    <div class="logo">Sale <em>Petal</em></div>
-    <div class="header-right">
-      <button class="icon-btn" id="settingsBtn" title="Settings">&#9881;</button>
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="logo">Sale <span>Petal</span></div>
+    <div class="topbar-right">
+      <button class="icon-btn" id="refreshBtn" title="Refresh"><i class="ti ti-refresh"></i></button>
     </div>
   </div>
-  <div class="last-updated" id="lastUpdated"></div>
-
-  <!-- Settings panel -->
-  <div class="settings-panel" id="settingsPanel">
-    <div class="settings-inner">
-      <div class="settings-title">Settings</div>
-      <div class="settings-row">
-        <label>GitHub Token</label>
-        <input type="password" id="patInput" placeholder="github_pat_..."/>
-      </div>
-      <button class="settings-save" id="savePat">Save</button>
-      <div class="settings-hint">
-        Required to add/remove products and brands.<br>
-        <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">Generate token</a>
-        &rarr; select <b>sales-petal</b> repo &rarr; Contents: Read &amp; Write.
-      </div>
-    </div>
-  </div>
-
-  <!-- Section 1: Favorite Products -->
-  <div class="section">
-    <div class="section-head">
-      <span class="section-title">Favorite Products</span>
-      <span class="section-count" id="productCount"></span>
-    </div>
-    <div class="add-form" id="addProductForm">
-      <div class="add-form-row">
-        <input id="productNameInput" placeholder="Product name (e.g. Pillow Talk Lipstick)"/>
-        <input id="productBrandInput" placeholder="Brand" style="max-width:140px"/>
-      </div>
-      <div style="margin-top:8px;display:flex;justify-content:flex-end">
-        <button class="add-submit" id="addProductBtn">+ Add Product</button>
-      </div>
-    </div>
-    <div class="cards" id="productsGrid">
-      <div class="sk-card"><div class="sk-line" style="width:55%"></div><div class="sk-line" style="width:35%"></div><div class="sk-line" style="width:70%"></div></div>
-      <div class="sk-card"><div class="sk-line" style="width:48%"></div><div class="sk-line" style="width:30%"></div><div class="sk-line" style="width:65%"></div></div>
-    </div>
-  </div>
-
-  <!-- Section 2: Brand Deals -->
-  <div class="section" style="margin-top:36px">
-    <div class="section-head">
-      <span class="section-title">Brand Deals</span>
-      <span class="section-count" id="brandCount"></span>
-    </div>
-    <div class="add-form">
-      <input id="brandNameInput" placeholder="Brand name (e.g. Charlotte Tilbury)"/>
-      <input id="brandUrlInput" placeholder="Homepage URL (e.g. https://charlottetilbury.com)"/>
-      <div style="display:flex;justify-content:flex-end">
-        <button class="add-submit" id="addBrandBtn">+ Add Brand</button>
-      </div>
-    </div>
-    <div class="cards" id="brandsGrid">
-      <div class="sk-card"><div class="sk-line" style="width:45%"></div><div class="sk-line" style="width:60%"></div><div class="sk-line" style="width:40%"></div></div>
-      <div class="sk-card"><div class="sk-line" style="width:50%"></div><div class="sk-line" style="width:55%"></div></div>
-    </div>
-  </div>
-
+  <div class="last-upd" id="lastUpd"></div>
 </div>
 
-<!-- Refresh -->
-<div class="refresh-bar">
-  <button class="refresh-btn" id="refreshBtn"><span id="refreshLabel">Refresh Deals</span></button>
+<div class="scroll" id="scroll">
+
+  <!-- DEALS VIEW -->
+  <div class="view on" id="view-deals">
+    <span class="sec">Brand deals</span>
+    <div id="brandsGrid">
+      <div class="sk"><div class="sk-line" style="width:40%"></div><div class="sk-line" style="width:65%"></div><div class="sk-line" style="width:50%"></div></div>
+      <div class="sk"><div class="sk-line" style="width:35%"></div><div class="sk-line" style="width:55%"></div></div>
+    </div>
+    <span class="sec">Your products</span>
+    <div id="productsGrid">
+      <div class="sk"><div class="sk-line" style="width:55%"></div><div class="sk-line" style="width:35%"></div><div class="sk-line" style="width:70%"></div></div>
+      <div class="sk"><div class="sk-line" style="width:48%"></div><div class="sk-line" style="width:60%"></div></div>
+    </div>
+  </div>
+
+  <!-- MY LIST VIEW -->
+  <div class="view" id="view-list">
+
+    <span class="sec">Settings</span>
+    <div class="settings-box">
+      <label class="field-label">GitHub personal access token</label>
+      <input class="field-input" type="password" id="patInput" placeholder="github_pat_..."/>
+      <div class="row-end"><button class="save-btn" id="savePat">Save token</button></div>
+      <div style="margin-top:9px;font-size:11px;color:var(--ink3);line-height:1.55">
+        Needed to add/remove items. &nbsp;<a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener" style="color:var(--clay);font-weight:600">Generate token</a> &rarr; select <b>sales-petal</b> repo &rarr; Contents: Read &amp; Write.
+      </div>
+    </div>
+
+    <span class="sec">Products</span>
+    <div class="add-box">
+      <input class="field-input" type="text" id="pName" placeholder="Product name (e.g. Pillow Talk Lipstick)"/>
+      <input class="field-input" type="text" id="pBrand" placeholder="Brand (e.g. Charlotte Tilbury)"/>
+      <div class="row-end"><button class="add-btn" id="addPBtn">+ Add product</button></div>
+    </div>
+    <div id="productsList"></div>
+
+    <span class="sec" style="margin-top:20px">Brands</span>
+    <div class="add-box">
+      <input class="field-input" type="text" id="bName" placeholder="Brand name (e.g. Charlotte Tilbury)"/>
+      <input class="field-input" type="text" id="bUrl" placeholder="Homepage URL (e.g. charlottetilbury.com)"/>
+      <div class="row-end"><button class="add-btn" id="addBBtn">+ Add brand</button></div>
+    </div>
+    <div id="brandsList"></div>
+
+  </div>
+</div>
+
+<div class="refresh-wrap">
+  <button class="refresh-btn" id="refreshDeals"><span id="refreshLabel">Refresh deals</span></button>
+</div>
+
+<div class="bottomnav">
+  <button class="tab on" id="tab-deals" onclick="switchTab('deals')">
+    <i class="ti ti-sparkles"></i>
+    <span>Deals</span>
+  </button>
+  <button class="tab" id="tab-list" onclick="switchTab('list')">
+    <i class="ti ti-heart"></i>
+    <span>My List</span>
+  </button>
 </div>
 
 <script>
 var REPO = 'ashleycanva/sales-petal';
 var BASE = '/sales-petal';
-var config = {products: [], brands: []};
-var deals = {products: [], brands: []};
-var syncing = false;
+var config = {products:[], brands:[]};
+var deals = {products:[], brands:[]};
+var busy = false;
 
 function ge(id){ return document.getElementById(id); }
-function esc(s){ return String(s||'').replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
-function showToast(msg, ok){
-  var t = document.createElement('div');
-  t.className = 'toast';
-  t.textContent = msg;
-  t.style.background = ok ? '#2B2724' : '#B5704F';
-  t.style.color = '#F6F0E9';
+function esc(s){ return String(s||'').replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+function norm(s){ return String(s||'').toLowerCase().trim(); }
+
+function toast(msg,ok){
+  var el=document.querySelector('.toast');if(el)el.remove();
+  var t=document.createElement('div');t.className='toast';t.textContent=msg;
+  if(!ok)t.style.background='#B5704F';
   document.body.appendChild(t);
-  setTimeout(function(){ t.remove(); }, 2800);
+  setTimeout(function(){t.remove();},2600);
+}
+
+/* ── Tab switch ── */
+function switchTab(name){
+  document.querySelectorAll('.view').forEach(function(v){v.classList.remove('on');});
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});
+  ge('view-'+name).classList.add('on');
+  ge('tab-'+name).classList.add('on');
+  ge('scroll').scrollTop=0;
+  if(name==='list') renderList();
 }
 
 /* ── Settings ── */
-ge('settingsBtn').onclick = function(){
-  var p = ge('settingsPanel');
-  p.classList.toggle('open');
-  if(p.classList.contains('open') && localStorage.getItem('gh-pat')){
-    ge('patInput').value = localStorage.getItem('gh-pat');
-  }
-};
-ge('savePat').onclick = function(){
-  var v = ge('patInput').value.trim();
-  if(!v){ showToast('Paste your GitHub token first', false); return; }
-  localStorage.setItem('gh-pat', v);
-  showToast('Token saved', true);
-  ge('settingsPanel').classList.remove('open');
+window.addEventListener('DOMContentLoaded',function(){
+  var pat=localStorage.getItem('gh-pat');
+  if(pat) ge('patInput').value=pat;
+});
+ge('savePat').onclick=function(){
+  var v=ge('patInput').value.trim();
+  if(!v){toast('Paste your GitHub token first',false);return;}
+  localStorage.setItem('gh-pat',v);
+  toast('Token saved',true);
 };
 
 /* ── GitHub API ── */
-async function githubGet(path){
-  var pat = localStorage.getItem('gh-pat');
-  var headers = {'Accept':'application/vnd.github+json'};
-  if(pat) headers['Authorization'] = 'Bearer ' + pat;
-  var r = await fetch('https://api.github.com/repos/' + REPO + '/contents/' + path, {headers: headers});
-  if(!r.ok) throw new Error('GitHub GET ' + r.status);
+async function ghGet(path){
+  var headers={'Accept':'application/vnd.github+json'};
+  var pat=localStorage.getItem('gh-pat');
+  if(pat)headers['Authorization']='Bearer '+pat;
+  var r=await fetch('https://api.github.com/repos/'+REPO+'/contents/'+path,{headers:headers});
+  if(!r.ok)throw new Error('GitHub '+r.status);
   return r.json();
 }
-async function githubPut(path, content, sha, message){
-  var pat = localStorage.getItem('gh-pat');
-  if(!pat) throw new Error('No GitHub token. Add it in Settings.');
-  var b64 = btoa(unescape(encodeURIComponent(JSON.stringify(content, null, 2))));
-  var r = await fetch('https://api.github.com/repos/' + REPO + '/contents/' + path, {
-    method: 'PUT',
-    headers: {
-      'Authorization': 'Bearer ' + pat,
-      'Accept': 'application/vnd.github+json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({message: message, content: b64, sha: sha})
+async function ghPut(path,obj,sha,msg){
+  var pat=localStorage.getItem('gh-pat');
+  if(!pat)throw new Error('Add your GitHub token in My List > Settings first.');
+  var b64=btoa(unescape(encodeURIComponent(JSON.stringify(obj,null,2))));
+  var r=await fetch('https://api.github.com/repos/'+REPO+'/contents/'+path,{
+    method:'PUT',
+    headers:{'Authorization':'Bearer '+pat,'Accept':'application/vnd.github+json','Content-Type':'application/json'},
+    body:JSON.stringify({message:msg,content:b64,sha:sha})
   });
-  if(!r.ok){
-    var err = await r.json().catch(function(){ return {}; });
-    throw new Error(err.message || 'GitHub PUT ' + r.status);
-  }
+  if(!r.ok){var e=await r.json().catch(function(){return{};}); throw new Error(e.message||'GitHub error');}
   return r.json();
 }
 async function saveConfig(msg){
-  if(syncing){ showToast('Already syncing...', false); return; }
-  syncing = true;
-  try {
-    var file = await githubGet('user-config.json');
-    await githubPut('user-config.json', config, file.sha, msg || 'update config');
-    showToast('Saved to GitHub', true);
-  } catch(e) {
-    showToast(e.message, false);
-    throw e;
-  } finally {
-    syncing = false;
-  }
+  var file=await ghGet('user-config.json');
+  await ghPut('user-config.json',config,file.sha,msg);
 }
 
-/* ── Render products ── */
-function renderProducts(){
-  var el = ge('productsGrid');
-  var countEl = ge('productCount');
-  var prods = config.products || [];
-  countEl.textContent = prods.length + ' tracked';
-
-  if(!prods.length){
-    el.innerHTML = '<div class="empty"><div class="e-icon">&#10047;</div><p>No products yet.<br>Add one above.</p></div>';
-    return;
-  }
-
-  var dealsMap = {};
-  (deals.products || []).forEach(function(d){ dealsMap[norm(d.name)] = d; });
-
-  el.innerHTML = '';
-  prods.forEach(function(p, i){
-    var d = dealsMap[norm(p.name)] || {};
-    var retailers = d.retailers || [];
-    var brandAlert = d.brand_promo_alert || '';
-    var card = document.createElement('div');
-    card.className = 'pcard';
-    card.style.animationDelay = (i*0.06) + 's';
-
-    var alertHtml = '';
-    if(brandAlert){
-      alertHtml = '<div class="brand-alert">'
-        + '<span class="alert-icon">&#128276;</span>'
-        + '<div><div class="alert-label">' + esc(p.brand) + ' Promo</div>'
-        + '<div class="alert-text">' + esc(brandAlert) + '</div></div>'
-        + '</div>';
-    }
-
-    var retailersHtml = '';
-    if(retailers.length){
-      retailersHtml = '<div class="retailers">';
-      retailers.forEach(function(r){
-        var priceHtml = '';
-        if(r.on_sale && r.sale_price){
-          priceHtml = '<span class="sale-price">' + esc(r.sale_price) + '</span>'
-            + (r.original_price ? '<span class="orig-price">' + esc(r.original_price) + '</span>' : '')
-            + (r.discount ? ' <span class="discount-badge">' + esc(r.discount) + '</span>' : '');
-        } else if(r.original_price){
-          priceHtml = '<span class="retailer-price">' + esc(r.original_price) + '</span>';
-        } else {
-          priceHtml = '<span class="no-sale">Not on sale</span>';
-        }
-        var linkHtml = r.url ? '<a class="retailer-link" href="' + esc(r.url) + '" target="_blank" rel="noopener">View &#8594;</a>' : '';
-        retailersHtml += '<div class="retailer-row">'
-          + '<div class="retailer-left"><span class="retailer-name">' + esc(r.retailer) + '</span>' + priceHtml + '</div>'
-          + linkHtml
-          + '</div>';
-      });
-      retailersHtml += '</div>';
-    } else {
-      retailersHtml = '<div class="retailers"><div class="retailer-row"><span class="no-sale">Checking prices&hellip;</span></div></div>';
-    }
-
-    card.innerHTML =
-      '<div class="pcard-head">'
-      + '<div><div class="pcard-name">' + esc(p.name) + '</div>'
-      + '<div class="pcard-brand">' + esc(p.brand) + '</div></div>'
-      + '<button class="pcard-remove" data-i="' + i + '" title="Remove">&#215;</button>'
-      + '</div>'
-      + alertHtml
-      + retailersHtml;
-
-    el.appendChild(card);
-  });
-
-  el.querySelectorAll('.pcard-remove').forEach(function(btn){
-    btn.onclick = function(){
-      var i = +btn.dataset.i;
-      config.products.splice(i, 1);
-      renderProducts();
-      saveConfig('remove product').catch(function(){});
-    };
-  });
-}
-
-/* ── Render brands ── */
+/* ── Render deals tab ── */
 function renderBrands(){
-  var el = ge('brandsGrid');
-  var countEl = ge('brandCount');
-  var brds = config.brands || [];
-  countEl.textContent = brds.length + ' tracked';
-
+  var el=ge('brandsGrid');
+  var brds=config.brands||[];
   if(!brds.length){
-    el.innerHTML = '<div class="empty"><div class="e-icon">&#10047;</div><p>No brands yet.<br>Add one above.</p></div>';
+    el.innerHTML='<div class="empty"><i class="ti ti-building-store"></i><p>No brands added yet.<br>Go to My List to add one.</p></div>';
     return;
   }
-
-  var dealsMap = {};
-  (deals.brands || []).forEach(function(b){ dealsMap[norm(b.name)] = b; });
-
-  el.innerHTML = '';
-  brds.forEach(function(b, i){
-    var d = dealsMap[norm(b.name)] || {};
-    var dealList = d.deals || [];
-    var card = document.createElement('div');
-    card.className = 'bcard';
-    card.style.animationDelay = (i*0.06) + 's';
-
-    var dealsHtml = '';
+  var dmap={};
+  (deals.brands||[]).forEach(function(b){dmap[norm(b.name)]=b;});
+  el.innerHTML='';
+  brds.forEach(function(b,i){
+    var d=dmap[norm(b.name)]||{};
+    var dealList=d.deals||[];
+    var card=document.createElement('div');
+    card.className='bcard';
+    card.style.animationDelay=(i*0.05)+'s';
+    var url=b.url||d.url||'';
+    var displayUrl=url.replace(/^https?:\/\//,'').replace(/\/$/,'');
+    var visitHtml=url?'<a class="visit-pill" href="'+esc(url)+'" target="_blank" rel="noopener">Visit <i class="ti ti-arrow-right"></i></a>':'';
+    var dealsHtml='';
     if(dealList.length){
-      dealsHtml = '<div class="bcard-deals">';
+      dealsHtml='<div class="bcard-deals">';
       dealList.forEach(function(deal){
-        var icon = {'promo_code':'&#127974;','bogo':'&#127873;','gwp':'&#127873;','sale_event':'&#128176;','free_shipping':'&#128230;'}[deal.type] || '&#10022;';
-        var codeHtml = deal.code ? '<div><span class="deal-pill-code">' + esc(deal.code) + '</span></div>' : '';
-        var expiryHtml = deal.expiry ? '<div class="deal-pill-expiry">Ends ' + esc(deal.expiry) + '</div>' : '';
-        dealsHtml += '<div class="deal-pill">'
-          + '<span class="deal-pill-icon">' + icon + '</span>'
-          + '<div><div class="deal-pill-text">' + esc(deal.text) + '</div>' + codeHtml + expiryHtml + '</div>'
-          + '</div>';
+        var icon={'promo_code':'ti-tag','bogo':'ti-gift','gwp':'ti-gift','sale_event':'ti-discount','free_shipping':'ti-truck'}[deal.type]||'ti-star';
+        var codeHtml=deal.code?'<div><span class="dc-code" onclick="copyCode(\''+esc(deal.code)+'\')" title="Copy code"><i class="ti ti-copy"></i>'+esc(deal.code)+'</span></div>':'';
+        var expiryHtml=deal.expiry?'<div class="dc-expiry">Ends '+esc(deal.expiry)+'</div>':'';
+        dealsHtml+='<div class="deal-chip"><i class="ti '+icon+'"></i><div><div class="dc-text">'+esc(deal.text)+'</div>'+codeHtml+expiryHtml+'</div></div>';
       });
-      dealsHtml += '</div>';
+      dealsHtml+='</div>';
     } else if(d.summary){
-      dealsHtml = '<div class="bcard-deals"><div class="deal-pill"><span class="deal-pill-icon">&#10022;</span><div class="deal-pill-text">' + esc(d.summary) + '</div></div></div>';
+      dealsHtml='<div class="bcard-deals"><div class="deal-chip"><i class="ti ti-star"></i><div class="dc-text">'+esc(d.summary)+'</div></div></div>';
     } else {
-      dealsHtml = '<div class="bcard-no-deals">No active promotions found</div>';
+      dealsHtml='<div class="no-promo">No active promotions right now</div>';
     }
-
-    var visitHtml = (b.url || d.url) ? '<a class="visit-link" href="' + esc(b.url || d.url) + '" target="_blank" rel="noopener">Visit brand &#8594;</a>' : '';
-
-    card.innerHTML =
-      '<div class="bcard-head">'
-      + '<div><div class="bcard-name">' + esc(b.name) + '</div>'
-      + '<div class="bcard-url">' + esc((b.url||'').replace(/^https?:\/\//, '')) + '</div></div>'
-      + '<button class="bcard-remove" data-i="' + i + '" title="Remove">&#215;</button>'
-      + '</div>'
-      + dealsHtml
-      + (visitHtml ? '<div class="bcard-foot">' + visitHtml + '</div>' : '');
-
+    card.innerHTML='<div class="bcard-head"><div><div class="bcard-name">'+esc(b.name)+'</div><div class="bcard-url">'+esc(displayUrl)+'</div></div>'+visitHtml+'</div>'+dealsHtml;
     el.appendChild(card);
   });
+}
 
-  el.querySelectorAll('.bcard-remove').forEach(function(btn){
-    btn.onclick = function(){
-      var i = +btn.dataset.i;
-      config.brands.splice(i, 1);
-      renderBrands();
-      saveConfig('remove brand').catch(function(){});
+function renderProducts(){
+  var el=ge('productsGrid');
+  var prods=config.products||[];
+  if(!prods.length){
+    el.innerHTML='<div class="empty"><i class="ti ti-heart"></i><p>No products added yet.<br>Go to My List to add one.</p></div>';
+    return;
+  }
+  var dmap={};
+  (deals.products||[]).forEach(function(p){dmap[norm(p.name)]=p;});
+  el.innerHTML='';
+  prods.forEach(function(p,i){
+    var d=dmap[norm(p.name)]||{};
+    var retailers=d.retailers||[];
+    var alert=d.brand_promo_alert||'';
+    var card=document.createElement('div');
+    card.className='pcard';
+    card.style.animationDelay=(i*0.05)+'s';
+    var alertHtml='';
+    if(alert){
+      alertHtml='<div class="alert-bar"><i class="ti ti-bell-ringing ab-icon"></i><div><div class="ab-label">'+esc(p.brand)+' promo</div><div class="ab-text">'+esc(alert)+'</div></div></div>';
+    }
+    var retHtml='';
+    if(retailers.length){
+      retHtml='<div class="retailers">';
+      retailers.forEach(function(r){
+        var priceHtml='';
+        if(r.on_sale&&r.sale_price){
+          priceHtml='<span class="sale-price">'+esc(r.sale_price)+'</span>'+(r.original_price?'<span class="orig-price">'+esc(r.original_price)+'</span>':'')+(r.discount?'<span class="sale-badge">'+esc(r.discount)+'</span>':'');
+        } else if(r.original_price){
+          priceHtml='<span class="reg-price">'+esc(r.original_price)+'</span>';
+        } else {
+          priceHtml='<span class="no-sale">Not on sale</span>';
+        }
+        var link=r.url?'<a class="ret-link" href="'+esc(r.url)+'" target="_blank" rel="noopener">View <i class="ti ti-arrow-right"></i></a>':'';
+        retHtml+='<div class="ret-row"><span class="ret-name">'+esc(r.retailer)+'</span><div class="ret-prices">'+priceHtml+'</div>'+link+'</div>';
+      });
+      retHtml+='</div>';
+    }
+    card.innerHTML='<div class="pcard-head"><div><div class="pcard-name">'+esc(p.name)+'</div><div class="pcard-brand">'+esc(p.brand)+'</div></div></div>'+alertHtml+retHtml;
+    el.appendChild(card);
+  });
+}
+
+/* ── Render My List tab ── */
+function renderList(){
+  var pl=ge('productsList');
+  var bl=ge('brandsList');
+  pl.innerHTML='';
+  bl.innerHTML='';
+  (config.products||[]).forEach(function(p,i){
+    var li=document.createElement('div');li.className='list-item';
+    li.innerHTML='<div><div class="li-name">'+esc(p.name)+'</div><div class="li-sub">'+esc(p.brand)+'</div></div>'
+      +'<button class="li-remove" data-section="products" data-i="'+i+'" title="Remove"><i class="ti ti-x"></i></button>';
+    pl.appendChild(li);
+  });
+  if(!(config.products||[]).length) pl.innerHTML='<div style="font-size:12px;color:var(--ink3);padding:4px 2px">No products yet.</div>';
+  (config.brands||[]).forEach(function(b,i){
+    var li=document.createElement('div');li.className='list-item';
+    var disp=(b.url||'').replace(/^https?:\/\//,'').replace(/\/$/,'');
+    li.innerHTML='<div><div class="li-name">'+esc(b.name)+'</div><div class="li-sub">'+esc(disp)+'</div></div>'
+      +'<button class="li-remove" data-section="brands" data-i="'+i+'" title="Remove"><i class="ti ti-x"></i></button>';
+    bl.appendChild(li);
+  });
+  if(!(config.brands||[]).length) bl.innerHTML='<div style="font-size:12px;color:var(--ink3);padding:4px 2px">No brands yet.</div>';
+  document.querySelectorAll('.li-remove').forEach(function(btn){
+    btn.onclick=async function(){
+      var sec=btn.dataset.section;var idx=+btn.dataset.i;
+      config[sec].splice(idx,1);renderList();
+      try{await saveConfig('remove from '+sec);toast('Removed',true);}
+      catch(e){toast(e.message,false);}
     };
   });
 }
 
 /* ── Add product ── */
-ge('addProductBtn').onclick = async function(){
-  var name = ge('productNameInput').value.trim();
-  var brand = ge('productBrandInput').value.trim();
-  if(!name){ showToast('Enter a product name', false); return; }
-  if(!brand){ showToast('Enter the brand name', false); return; }
-  config.products.push({name: name, brand: brand});
-  ge('productNameInput').value = '';
-  ge('productBrandInput').value = '';
-  renderProducts();
-  try { await saveConfig('add product: ' + name); }
-  catch(e){ config.products.pop(); renderProducts(); }
+ge('addPBtn').onclick=async function(){
+  var name=ge('pName').value.trim();var brand=ge('pBrand').value.trim();
+  if(!name){toast('Enter a product name',false);return;}
+  if(!brand){toast('Enter the brand',false);return;}
+  config.products.push({name:name,brand:brand});
+  ge('pName').value='';ge('pBrand').value='';
+  renderList();
+  try{await saveConfig('add product: '+name);toast('Added — scraper will check it next run',true);}
+  catch(e){config.products.pop();renderList();toast(e.message,false);}
 };
-ge('productNameInput').addEventListener('keydown', function(e){ if(e.key==='Enter') ge('productBrandInput').focus(); });
-ge('productBrandInput').addEventListener('keydown', function(e){ if(e.key==='Enter') ge('addProductBtn').click(); });
+ge('pName').addEventListener('keydown',function(e){if(e.key==='Enter')ge('pBrand').focus();});
+ge('pBrand').addEventListener('keydown',function(e){if(e.key==='Enter')ge('addPBtn').click();});
 
 /* ── Add brand ── */
-ge('addBrandBtn').onclick = async function(){
-  var name = ge('brandNameInput').value.trim();
-  var url = ge('brandUrlInput').value.trim();
-  if(!name){ showToast('Enter a brand name', false); return; }
-  if(!url){ showToast('Enter the brand homepage URL', false); return; }
-  if(!/^https?:\/\//i.test(url)) url = 'https://' + url;
-  config.brands.push({name: name, url: url});
-  ge('brandNameInput').value = '';
-  ge('brandUrlInput').value = '';
-  renderBrands();
-  try { await saveConfig('add brand: ' + name); }
-  catch(e){ config.brands.pop(); renderBrands(); }
+ge('addBBtn').onclick=async function(){
+  var name=ge('bName').value.trim();var url=ge('bUrl').value.trim();
+  if(!name){toast('Enter a brand name',false);return;}
+  if(!url){toast('Enter the homepage URL',false);return;}
+  if(!/^https?:\/\//i.test(url))url='https://'+url;
+  config.brands.push({name:name,url:url});
+  ge('bName').value='';ge('bUrl').value='';
+  renderList();
+  try{await saveConfig('add brand: '+name);toast('Added — scraper will check it next run',true);}
+  catch(e){config.brands.pop();renderList();toast(e.message,false);}
 };
-ge('brandNameInput').addEventListener('keydown', function(e){ if(e.key==='Enter') ge('brandUrlInput').focus(); });
-ge('brandUrlInput').addEventListener('keydown', function(e){ if(e.key==='Enter') ge('addBrandBtn').click(); });
+ge('bName').addEventListener('keydown',function(e){if(e.key==='Enter')ge('bUrl').focus();});
+ge('bUrl').addEventListener('keydown',function(e){if(e.key==='Enter')ge('addBBtn').click();});
+
+/* ── Copy code ── */
+window.copyCode=function(code){
+  navigator.clipboard&&navigator.clipboard.writeText(code).then(function(){toast('Copied: '+code,true);}).catch(function(){toast(code,true);});
+};
 
 /* ── Load data ── */
-var refreshing = false;
-async function loadAll(showSpinner){
-  if(refreshing) return;
-  refreshing = true;
-  var btn = ge('refreshBtn'), lbl = ge('refreshLabel');
-  btn.disabled = true;
-  if(showSpinner){ lbl.textContent = 'Checking...'; btn.insertAdjacentHTML('afterbegin','<span class="spin"></span>'); }
-  try {
-    var nc = Date.now();
-    var [cfgR, dealsR] = await Promise.all([
-      fetch(BASE + '/user-config.json?nc=' + nc, {cache:'no-store'}),
-      fetch(BASE + '/deals.json?nc=' + nc, {cache:'no-store'})
+async function loadAll(spinner){
+  if(busy)return;busy=true;
+  var btn=ge('refreshDeals'),lbl=ge('refreshLabel');
+  btn.disabled=true;
+  if(spinner){lbl.textContent='Checking...';btn.insertAdjacentHTML('afterbegin','<span class="spin"></span>');}
+  try{
+    var nc=Date.now();
+    var [cr,dr]=await Promise.all([
+      fetch(BASE+'/user-config.json?nc='+nc,{cache:'no-store'}),
+      fetch(BASE+'/deals.json?nc='+nc,{cache:'no-store'})
     ]);
-    if(cfgR.ok) config = await cfgR.json();
-    if(dealsR.ok){
-      deals = await dealsR.json();
+    if(cr.ok)config=await cr.json();
+    if(dr.ok){
+      deals=await dr.json();
       if(deals.updatedAt){
-        var d = new Date(deals.updatedAt);
-        ge('lastUpdated').textContent = 'Last checked ' + d.toLocaleDateString(undefined,{month:'short',day:'numeric'}) + ' at ' + d.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'});
+        var d=new Date(deals.updatedAt);
+        ge('lastUpd').textContent='Checked '+d.toLocaleDateString(undefined,{month:'short',day:'numeric'})+' at '+d.toLocaleTimeString(undefined,{hour:'numeric',minute:'2-digit'});
       }
     }
-    renderProducts();
-    renderBrands();
-    if(showSpinner) showToast('Deals refreshed', true);
-    setTimeout(maybeAskNotifications, 1200);
-  } catch(e) {
-    showToast('Could not load: ' + e.message, false);
-  } finally {
-    refreshing = false;
-    btn.disabled = false;
-    var s = btn.querySelector('.spin'); if(s) s.remove();
-    lbl.textContent = 'Refresh Deals';
+    renderBrands();renderProducts();
+    if(spinner)toast('Deals refreshed',true);
+    setTimeout(maybeNotif,1200);
+  } catch(e){
+    toast('Could not load: '+e.message,false);
+  } finally{
+    busy=false;btn.disabled=false;
+    var s=btn.querySelector('.spin');if(s)s.remove();
+    lbl.textContent='Refresh deals';
   }
 }
 
-ge('refreshBtn').onclick = function(){ refreshing = false; loadAll(true); };
-
-function norm(s){ return String(s||'').toLowerCase().trim(); }
-
-/* ── Notifications ── */
-async function registerPeriodicSync(){
-  try {
-    var reg = await navigator.serviceWorker.ready;
-    if('periodicSync' in reg){
-      await reg.periodicSync.register('check-deals', {minInterval: 4*60*60*1000});
-    }
-  } catch(e){ console.warn('Periodic sync:', e); }
-}
-function maybeAskNotifications(){
-  if(!('Notification' in window)) return;
-  if(Notification.permission !== 'default') return;
-  if(localStorage.getItem('notif-dismissed')) return;
-  var banner = document.createElement('div');
-  banner.className = 'notif-banner';
-  banner.innerHTML = '<span style="font-size:24px;flex-shrink:0">&#127800;</span>'
-    + '<span style="flex:1;line-height:1.45">Get notified when your brands run a promo &mdash; even when the app is closed.</span>'
-    + '<div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">'
-    + '<button id="nb-yes" style="background:var(--clay);color:#fff;border:none;border-radius:100px;padding:8px 14px;font-family:Archivo,sans-serif;font-weight:700;font-size:12px;cursor:pointer">Allow</button>'
-    + '<button id="nb-no" style="background:transparent;color:#9A9080;border:none;font-family:Archivo,sans-serif;font-size:11px;cursor:pointer">Not now</button>'
-    + '</div>';
-  document.body.appendChild(banner);
-  document.getElementById('nb-yes').onclick = function(){
-    Notification.requestPermission().then(function(p){
-      if(p==='granted'){ registerPeriodicSync(); }
-      banner.remove();
-    });
-  };
-  document.getElementById('nb-no').onclick = function(){
-    localStorage.setItem('notif-dismissed','1');
-    banner.remove();
-  };
-}
-if(Notification.permission==='granted') registerPeriodicSync();
+ge('refreshBtn').onclick=function(){busy=false;loadAll(true);};
+ge('refreshDeals').onclick=function(){busy=false;loadAll(true);};
 
 /* ── Service worker ── */
 if('serviceWorker' in navigator){
-  window.addEventListener('load', function(){
-    navigator.serviceWorker.register('service-worker.js')
-      .then(function(r){ console.log('SW', r.scope); })
-      .catch(function(e){ console.warn('SW failed:', e); });
+  window.addEventListener('load',function(){
+    navigator.serviceWorker.register('service-worker.js').catch(function(e){console.warn('SW:',e);});
   });
 }
 
-/* ── Boot ── */
+/* ── Notifications ── */
+async function registerSync(){
+  try{var r=await navigator.serviceWorker.ready;if('periodicSync' in r)await r.periodicSync.register('check-deals',{minInterval:4*60*60*1000});}
+  catch(e){console.warn('sync:',e);}
+}
+function maybeNotif(){
+  if(!('Notification' in window)||Notification.permission!=='default'||localStorage.getItem('notif-off'))return;
+  var b=document.createElement('div');
+  b.style.cssText='position:fixed;bottom:72px;left:14px;right:14px;background:#2B2724;color:#F7F1EB;border-radius:16px;padding:14px 16px;display:flex;align-items:center;gap:12px;font-size:13px;z-index:99;animation:fadein .3s ease;box-shadow:0 6px 24px rgba(0,0,0,.2)';
+  b.innerHTML='<i class="ti ti-bell" style="font-size:20px;color:#C98B7A;flex-shrink:0"></i>'
+    +'<span style="flex:1;line-height:1.4">Get notified when brands run a promo.</span>'
+    +'<div style="display:flex;gap:6px;flex-shrink:0">'
+    +'<button id="nb-yes" style="background:#C98B7A;color:#fff;border:none;border-radius:100px;padding:7px 13px;font-family:Archivo,sans-serif;font-size:12px;font-weight:700;cursor:pointer">Allow</button>'
+    +'<button id="nb-no" style="background:rgba(255,255,255,.1);color:#F7F1EB;border:none;border-radius:100px;padding:7px 11px;font-family:Archivo,sans-serif;font-size:12px;cursor:pointer">Later</button>'
+    +'</div>';
+  document.body.appendChild(b);
+  document.getElementById('nb-yes').onclick=function(){
+    Notification.requestPermission().then(function(p){if(p==='granted')registerSync();b.remove();});
+  };
+  document.getElementById('nb-no').onclick=function(){localStorage.setItem('notif-off','1');b.remove();};
+}
+if(typeof Notification!=='undefined'&&Notification.permission==='granted')registerSync();
+
 loadAll(false);
 </script>
 </body>
