@@ -159,19 +159,19 @@
   }
 
   // ---------- API key ----------
-  function getKey() { return localStorage.getItem('salepetal:apikey') || ''; }
+  function getKey() { return localStorage.getItem(‘salepetal:geminikey’) || ‘’; }
   function renderKeybar() {
-    const bar = $('keybar');
+    const bar = $(‘keybar’);
     if (getKey()) {
-      bar.classList.add('saved');
-      bar.innerHTML = '<p>&#10003; <b>API key saved.</b> You’re ready to find sales. <a href="#" id="keyClear" style="color:#3E6B3E">Change key</a></p>';
-      $('keyClear').onclick = e => { e.preventDefault(); localStorage.removeItem('salepetal:apikey'); location.reload(); };
+      bar.classList.add(‘saved’);
+      bar.innerHTML = ‘<p>&#10003; <b>Gemini key saved.</b> You\’re ready to find sales. <a href="#" id="keyClear" style="color:#3E6B3E">Change key</a></p>’;
+      $(‘keyClear’).onclick = e => { e.preventDefault(); localStorage.removeItem(‘salepetal:geminikey’); location.reload(); };
     }
   }
-  $('keySave').onclick = () => {
-    const v = $('keyInput').value.trim();
+  $(‘keySave’).onclick = () => {
+    const v = $(‘keyInput’).value.trim();
     if (!v) return;
-    localStorage.setItem('salepetal:apikey', v);
+    localStorage.setItem(‘salepetal:geminikey’, v);
     renderKeybar();
   };
 
