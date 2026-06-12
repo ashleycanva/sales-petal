@@ -1,4 +1,5 @@
-const CACHE = 'salepetal-v4';
+const CACHE = 'salepetal-v5';
+const NOTIF_STORE = 'salepetal-notif-v1';
 const ASSETS = [
   '/sales-petal/',
   '/sales-petal/index.html',
@@ -51,6 +52,53 @@ self.addEventListener('push', e => {
   };
   e.waitUntil(self.registration.showNotification(title, options));
 });
+
+// ── Periodic Background Sync: check deals.json for new matches ────────────
+self.addEventListener('periodicsync', e => {
+  if (e.tag === 'check-deals') e.waitUntil(checkForNewDeals());
+});
+
+async function checkForNewDeals() {
+  try {
+    const r = await fetch('/sales-petal/deals.json?t=' + Date.now());
+    if (!r.ok) return;
+    const data = await r.json();
+    const deals = data.deals || [];
+    const updatedAt = data.updatedAt || '';
+
+    const store = await caches.open(NOTIF_STORE);
+    const prev = await store.match('last-notified');
+    const lastNotified = prev ? await prev.text() : '';
+    if (updatedAt && updatedAt === lastNotified) return;
+
+    const productMatches = deals.filter(d => d.matched_products && d.matched_products.length > 0);
+    let title, body;
+    if (productMatches.length > 0) {
+      const names = [...new Set(productMatches.flatMap(d => d.matched_products))];
+      title = 'Your products are on sale!';
+      body = names.slice(0, 2).join(', ') + (names.length > 2 ? ' + ' + (names.length - 2) + ' more' : '') + ' — tap to view';
+    } else if (deals.length > 0) {
+      title = 'Sale Petal';
+      body = deals.length + ' beauty deals found — tap to view';
+    } else {
+      return;
+    }
+
+    await self.registration.showNotification(title, {
+      body,
+      icon: '/sales-petal/icons/icon-192.png',
+      badge: '/sales-petal/icons/icon-192.png',
+      vibrate: [200, 100, 200],
+      tag: 'deal-update',
+      renotify: true,
+      data: { url: '/sales-petal/' }
+    });
+
+    await store.put('last-notified', new Response(updatedAt));
+  } catch (e) {
+    console.warn('Periodic sync check failed:', e);
+  }
+}
 
 // ── Notification click: open the app ──────────────────────────────────────
 self.addEventListener('notificationclick', e => {
