@@ -1,4 +1,4 @@
-const CACHE = 'salepetal-v1';
+const CACHE = 'salepetal-v2';
 const ASSETS = [
   '/sale-petal/',
   '/sale-petal/index.html',
