@@ -4,6 +4,12 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 <title>Sale Petal — beauty sale tracker</title>
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#C98B7A" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="Sale Petal" />
+<link rel="apple-touch-icon" href="icons/icon-192.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
@@ -30,41 +36,37 @@
   .kicker { font-size: 11px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--clay); font-weight: 600; }
   h1 { font-family: var(--display); font-weight: 400; font-size: 62px; text-align: center; line-height: 0.9; margin: 4px 0 12px; letter-spacing: 0.01em; text-transform: uppercase; color: var(--ink); }
   h1 em { font-style: normal; color: var(--clay); }
-  .subtitle { text-align: center; color: var(--ink-soft); font-size: 13.5px; font-weight: 400; letter-spacing: 0.02em; margin-bottom: 32px; }
+  .subtitle { text-align: center; color: var(--ink-soft); font-size: 13.5px; font-weight: 400; letter-spacing: 0.02em; margin-bottom: 28px; }
   .section-label { font-size: 10.5px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--ink-soft); font-weight: 600; margin-bottom: 12px; display: block; }
-  .divider { border: none; border-top: 1px solid var(--line); margin: 28px 0; }
-
-  /* ── Refill list ── */
-  .refill-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
-  .refill-card { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 15px 18px; position: relative; overflow: hidden; transition: transform .2s, box-shadow .2s; }
-  .refill-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--line); }
-  .refill-card.on-sale { background: #FFF8F5; border-color: var(--clay-soft); }
-  .refill-card.on-sale::before { background: linear-gradient(var(--clay-soft), var(--gold)); }
-  .refill-card:hover { transform: translateY(-1px); box-shadow: 0 6px 18px -10px var(--shadow); }
-  .refill-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
-  .refill-info { flex: 1; }
-  .refill-brand-label { font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-soft); font-weight: 600; margin-bottom: 3px; }
-  .refill-name { font-size: 14px; font-weight: 600; color: var(--ink); line-height: 1.35; }
-  .status-pill { font-size: 10px; font-weight: 700; padding: 4px 12px; border-radius: 100px; white-space: nowrap; flex-shrink: 0; letter-spacing: 0.05em; margin-top: 2px; }
-  .status-pill.on-sale { background: var(--clay); color: white; }
-  .status-pill.watching { background: var(--cream-deep); color: var(--ink-soft); }
-  .refill-deal { margin-top: 12px; padding-top: 11px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
-  .refill-deal-left { display: flex; flex-direction: column; gap: 3px; }
-  .refill-discount { display: inline-block; font-size: 12px; font-weight: 700; color: var(--clay); background: #F4E6DD; padding: 2px 10px; border-radius: 100px; }
-  .refill-retailer { font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-soft); font-weight: 600; }
-  .refill-link { font-size: 12px; color: var(--clay); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; transition: gap .2s; }
-  .refill-link:hover { gap: 8px; }
-
-  /* ── Store filter + deals ── */
-  .filter-row { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
-  .filter-btn { background: var(--paper); border: 1px solid var(--line); border-radius: 100px; padding: 7px 16px; font-family: var(--body); font-size: 12px; font-weight: 600; color: var(--ink-soft); cursor: pointer; transition: all .2s; letter-spacing: 0.04em; }
-  .filter-btn.active { background: var(--ink); color: var(--cream); border-color: var(--ink); }
-  .filter-btn:hover:not(.active) { border-color: var(--clay-soft); color: var(--clay); }
-  .refresh-btn { margin-left: auto; background: transparent; border: 1px solid var(--line); border-radius: 100px; padding: 7px 16px; font-family: var(--body); font-size: 12px; font-weight: 600; color: var(--ink-soft); cursor: pointer; transition: all .2s; display: flex; align-items: center; gap: 6px; }
-  .refresh-btn:hover { border-color: var(--clay-soft); color: var(--clay); }
-  .refresh-btn .spin { width: 12px; height: 12px; border: 2px solid var(--clay-soft); border-top-color: var(--clay); border-radius: 50%; animation: spin .7s linear infinite; }
+  .brands { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+  .chip { display: inline-flex; align-items: center; gap: 7px; background: var(--paper); border: 1px solid var(--line); padding: 7px 13px; border-radius: 100px; font-size: 13px; font-weight: 500; color: var(--ink); transition: all .2s ease; animation: pop .3s ease backwards; }
+  @keyframes pop { from { opacity: 0; transform: scale(.85); } to { opacity: 1; transform: scale(1); } }
+  .chip .x { cursor: pointer; color: var(--ink-soft); font-size: 15px; line-height: 1; width: 14px; height: 14px; display: grid; place-items: center; border-radius: 50%; transition: all .15s; }
+  .chip .x:hover { color: var(--clay); transform: rotate(90deg); }
+  .add-row { display: flex; gap: 8px; margin-bottom: 26px; }
+  .add-row input { flex: 1; background: var(--paper); border: 1px solid var(--line); border-radius: 100px; padding: 12px 18px; font-family: var(--body); font-size: 14px; color: var(--ink); outline: none; transition: border .2s; }
+  .add-row input:focus { border-color: var(--clay-soft); }
+  .add-row input::placeholder { color: #B5A89B; }
+  .add-btn { background: var(--ink); color: var(--cream); border: none; border-radius: 100px; width: 46px; font-size: 22px; cursor: pointer; transition: all .2s; flex-shrink: 0; font-weight: 400; line-height: 1; }
+  .add-btn:hover { background: var(--clay); }
+  .keybar { background: #FBEEE6; border: 1px solid var(--clay-soft); border-radius: 14px; padding: 14px 16px; margin-bottom: 18px; }
+  .keybar p { font-size: 12.5px; color: var(--ink-soft); margin-bottom: 10px; }
+  .keybar p b { color: var(--clay); font-weight: 700; }
+  .keybar .krow { display: flex; gap: 8px; }
+  .keybar input { flex: 1; background: var(--paper); border: 1px solid var(--line); border-radius: 100px; padding: 10px 15px; font-family: var(--body); font-size: 13px; color: var(--ink); outline: none; }
+  .keybar input:focus { border-color: var(--clay); }
+  .keybar button { background: var(--ink); color: var(--cream); border: none; border-radius: 100px; padding: 0 18px; font-family: var(--body); font-size: 13px; font-weight: 600; cursor: pointer; transition: background .2s; }
+  .keybar button:hover { background: var(--clay); }
+  .keybar.saved { background: #EEF3EE; border-color: #BcD3BC; }
+  .keybar.saved p { color: #5A7A5A; }
+  .keybar.saved p b { color: #3E6B3E; }
+  .find-btn { width: 100%; background: linear-gradient(135deg, var(--clay) 0%, #B5704F 100%); color: #FFF9F3; border: none; border-radius: 16px; padding: 17px; font-family: var(--display); font-size: 19px; font-weight: 400; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; box-shadow: 0 10px 28px -8px rgba(181, 112, 79, 0.5); transition: all .25s; display: flex; align-items: center; justify-content: center; gap: 12px; }
+  .find-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 14px 34px -8px rgba(181, 112, 79, 0.6); }
+  .find-btn:active:not(:disabled) { transform: translateY(0); }
+  .find-btn:disabled { opacity: 0.55; cursor: default; }
+  .find-btn .spin { width: 17px; height: 17px; border: 2px solid rgba(255,255,255,.4); border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
-  .meta-row { display: flex; justify-content: space-between; align-items: center; margin: 0 2px 16px; min-height: 18px; }
+  .meta-row { display: flex; justify-content: space-between; align-items: center; margin: 30px 2px 16px; min-height: 18px; }
   .results-count { font-size: 12px; color: var(--ink-soft); letter-spacing: 0.05em; font-weight: 500; }
   .results-count b { color: var(--clay); font-weight: 700; }
   .last-checked { font-size: 11px; color: #B5A89B; font-weight: 400; }
@@ -84,6 +86,7 @@
   .deal-retailer { font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-soft); font-weight: 600; }
   .deal-link { font-size: 12px; color: var(--clay); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; transition: gap .2s; }
   .deal-link:hover { gap: 9px; }
+  .deal-until { font-size: 11px; color: var(--gold); font-weight: 600; margin-top: 6px; letter-spacing: 0.02em; }
   .state { text-align: center; padding: 50px 20px; color: var(--ink-soft); }
   .state .mark { font-size: 44px; color: var(--clay-soft); margin-bottom: 14px; line-height: 1; }
   .state p { font-size: 14px; font-weight: 400; line-height: 1.6; }
@@ -92,6 +95,7 @@
   .sk-line { height: 12px; border-radius: 6px; background: linear-gradient(90deg, var(--cream-deep) 25%, var(--sand) 50%, var(--cream-deep) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; margin-bottom: 10px; }
   @keyframes shimmer { to { background-position: -200% 0; } }
   .footnote { text-align: center; font-size: 11px; color: #BCAE9F; margin-top: 34px; font-weight: 400; line-height: 1.6; }
+  .footnote a { color: var(--clay); }
 </style>
 </head>
 <body>
@@ -100,23 +104,22 @@
   <h1>Sale <em>Petal</em></h1>
   <p class="subtitle">Your favorite brands, on sale — all in one quiet place.</p>
 
-  <span class="section-label">My Refill List</span>
-  <div class="refill-list" id="refillList">
-    <div class="skeleton"><div class="sk-line" style="width:30%"></div><div class="sk-line" style="width:60%"></div></div>
-    <div class="skeleton"><div class="sk-line" style="width:30%"></div><div class="sk-line" style="width:55%"></div></div>
-    <div class="skeleton"><div class="sk-line" style="width:30%"></div><div class="sk-line" style="width:65%"></div></div>
+  <div class="keybar" id="keybar">
+    <p><b>One-time setup:</b> paste your Anthropic API key to fetch live deals. It's saved only in this browser.</p>
+    <div class="krow">
+      <input id="keyInput" type="password" placeholder="sk-ant-..." autocomplete="off" />
+      <button id="keySave">Save</button>
+    </div>
   </div>
 
-  <hr class="divider" />
-
-  <span class="section-label">All Deals</span>
-  <div class="filter-row">
-    <button class="filter-btn active" data-store="all">All Stores</button>
-    <button class="filter-btn" data-store="Sephora">Sephora</button>
-    <button class="filter-btn" data-store="Ulta">Ulta</button>
-    <button class="filter-btn" data-store="Amazon">Amazon</button>
-    <button class="refresh-btn" id="refreshBtn">↻ Refresh</button>
+  <span class="section-label">Your Brands</span>
+  <div class="brands" id="brands"></div>
+  <div class="add-row">
+    <input id="brandInput" type="text" placeholder="Add a brand…" autocomplete="off" />
+    <button class="add-btn" id="addBtn">+</button>
   </div>
+
+  <button class="find-btn" id="findBtn"><span id="findLabel">Find Today's Sales</span></button>
 
   <div class="meta-row">
     <span class="results-count" id="count"></span>
@@ -124,140 +127,217 @@
   </div>
 
   <div class="deals" id="deals">
-    <div class="skeleton"><div class="sk-line" style="width:40%"></div><div class="sk-line" style="width:28%"></div><div class="sk-line" style="width:80%"></div></div>
-    <div class="skeleton"><div class="sk-line" style="width:35%"></div><div class="sk-line" style="width:22%"></div><div class="sk-line" style="width:70%"></div></div>
-    <div class="skeleton"><div class="sk-line" style="width:45%"></div><div class="sk-line" style="width:30%"></div><div class="sk-line" style="width:75%"></div></div>
+    <div class="state">
+      <div class="mark">&#10047;</div>
+      <p>Add your brands above, then tap<br><b>Find Today's Sales</b>.</p>
+      <p class="small">Searches Sephora, ULTA, Nordstrom &amp; brand sites for live deals.</p>
+    </div>
   </div>
 
-  <p class="footnote">Deals are checked every 4 hours automatically.<br>Always confirm the price on the retailer's site before buying.</p>
+  <p class="footnote">Deals are gathered live from across the web and may change.<br>Always confirm the price on the retailer's site before buying.</p>
 </div>
 
 <script>
-  const MY_PRODUCTS = [
-    { name: 'Advanced Génifique Face Serum',         brand: 'Lancôme' },
-    { name: 'Advanced Génifique Night Cream',         brand: 'Lancôme' },
-    { name: 'Rénergie H.P.N. 300-Peptide Cream',     brand: 'Lancôme' },
-    { name: 'Major Headlines Blush Duo',              brand: 'Patrick Ta' },
-    { name: 'Veil Hydrating Skin Tint',               brand: 'Hourglass' },
-    { name: 'Vanish Concealer',                       brand: 'Hourglass' },
-  ];
+  const DEFAULT_BRANDS = ['Lancôme', 'Dr. Jart+', 'Hourglass', 'Patrick Ta'];
+  const MODEL = 'claude-sonnet-4-6';
+  let brands = [];
+  let seen = new Set();
+  let loading = false;
+  const $ = id => document.getElementById(id);
 
-  let allDeals = [];
-  let activeStore = 'all';
-  let seenIds = new Set(JSON.parse(localStorage.getItem('sp:seen') || '[]'));
+  // ---------- Persistence (localStorage) ----------
+  function load(key, fallback) { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; } catch { return fallback; } }
+  function save(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch {} }
 
-  function esc(s) {
-    return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  }
-  function dealId(d) {
-    return (d.brand + '|' + d.retailer + '|' + (d.title||'')).toLowerCase().replace(/\s+/g,'');
-  }
-
-  function renderRefillList(deals) {
-    const el = document.getElementById('refillList');
-    el.innerHTML = MY_PRODUCTS.map(p => {
-      const matchingDeals = deals.filter(d =>
-        d.matched_products && d.matched_products.includes(p.name)
-      );
-      const onSale = matchingDeals.length > 0;
-      const deal = matchingDeals[0];
-      const url = deal && deal.url && /^https?:\/\//i.test(deal.url) ? deal.url : '#';
-
-      const dealSection = onSale ? `
-        <div class="refill-deal">
-          <div class="refill-deal-left">
-            <span class="refill-discount">${esc(deal.discount)}</span>
-            <span class="refill-retailer">${esc(deal.retailer)}</span>
-          </div>
-          <a class="refill-link" href="${esc(url)}" target="_blank" rel="noopener">View deal &#8594;</a>
-        </div>` : '';
-
-      return `
-        <div class="refill-card ${onSale ? 'on-sale' : ''}">
-          <div class="refill-top">
-            <div class="refill-info">
-              <div class="refill-brand-label">${esc(p.brand)}</div>
-              <div class="refill-name">${esc(p.name)}</div>
-            </div>
-            <span class="status-pill ${onSale ? 'on-sale' : 'watching'}">${onSale ? 'On Sale' : 'Watching'}</span>
-          </div>
-          ${dealSection}
-        </div>`;
-    }).join('');
+  function loadState() {
+    brands = load('salepetal:brands', DEFAULT_BRANDS.slice());
+    seen = new Set(load('salepetal:seen', []));
+    const lc = localStorage.getItem('salepetal:lastChecked');
+    if (lc) $('lastChecked').textContent = 'Last checked ' + lc;
+    renderKeybar();
+    renderBrands();
   }
 
-  function renderDeals(deals) {
-    const el = document.getElementById('deals');
-    const filtered = activeStore === 'all' ? deals : deals.filter(d => d.retailer === activeStore);
-
-    document.getElementById('count').innerHTML = filtered.length
-      ? '<b>' + filtered.length + '</b> deal' + (filtered.length !== 1 ? 's' : '') : '';
-
-    if (!filtered.length) {
-      el.innerHTML = '<div class="state"><div class="mark">&#10047;</div><p>No deals right now for these brands.</p><p class="small">The scraper checks every 4 hours — check back soon.</p></div>';
-      return;
+  // ---------- API key ----------
+  function getKey() { return localStorage.getItem('salepetal:apikey') || ''; }
+  function renderKeybar() {
+    const bar = $('keybar');
+    if (getKey()) {
+      bar.classList.add('saved');
+      bar.innerHTML = '<p>&#10003; <b>API key saved.</b> You’re ready to find sales. <a href="#" id="keyClear" style="color:#3E6B3E">Change key</a></p>';
+      $('keyClear').onclick = e => { e.preventDefault(); localStorage.removeItem('salepetal:apikey'); location.reload(); };
     }
-
-    el.innerHTML = '';
-    filtered.forEach((d, i) => {
-      const id = dealId(d);
-      const isNew = !seenIds.has(id);
-      const url = d.url && /^https?:\/\//i.test(d.url) ? d.url : '#';
-      const card = document.createElement('div');
-      card.className = 'deal';
-      card.style.animationDelay = (i * 0.05) + 's';
-      card.innerHTML =
-        '<div class="deal-top"><span class="deal-brand">' + esc(d.brand) + '</span>' +
-        (isNew ? '<span class="new-tag">New</span>' : '') + '</div>' +
-        (d.discount ? '<span class="deal-discount">' + esc(d.discount) + '</span>' : '') +
-        (d.title ? '<div class="deal-title">' + esc(d.title) + '</div>' : '') +
-        (d.details ? '<div class="deal-details">' + esc(d.details) + '</div>' : '') +
-        '<div class="deal-foot"><span class="deal-retailer">' + esc(d.retailer || '') + '</span>' +
-        '<a class="deal-link" href="' + esc(url) + '" target="_blank" rel="noopener">View deal &#8594;</a></div>';
-      el.appendChild(card);
-      seenIds.add(id);
-    });
-    localStorage.setItem('sp:seen', JSON.stringify([...seenIds]));
   }
+  $('keySave').onclick = () => {
+    const v = $('keyInput').value.trim();
+    if (!v) return;
+    localStorage.setItem('salepetal:apikey', v);
+    renderKeybar();
+  };
 
-  async function loadDeals(showSpinner) {
-    const btn = document.getElementById('refreshBtn');
-    if (showSpinner) btn.innerHTML = '<span class="spin"></span> Checking…';
+  // ---------- Brand chips ----------
+  function renderBrands() {
+    const el = $('brands'); el.innerHTML = '';
+    if (!brands.length) { el.innerHTML = '<span style="font-size:13px;color:#B5A89B;font-weight:400;">No brands yet — add some below.</span>'; return; }
+    brands.forEach((b, i) => {
+      const chip = document.createElement('span');
+      chip.className = 'chip'; chip.style.animationDelay = (i * 0.03) + 's';
+      chip.innerHTML = escapeHtml(b) + ' <span class="x" data-i="' + i + '">×</span>';
+      el.appendChild(chip);
+    });
+    el.querySelectorAll('.x').forEach(x => x.onclick = () => { brands.splice(+x.dataset.i, 1); save('salepetal:brands', brands); renderBrands(); });
+  }
+  function addBrand() {
+    const v = $('brandInput').value.trim(); if (!v) return;
+    if (!brands.some(b => b.toLowerCase() === v.toLowerCase())) { brands.push(v); save('salepetal:brands', brands); renderBrands(); }
+    $('brandInput').value = ''; $('brandInput').focus();
+  }
+  $('addBtn').onclick = addBrand;
+  $('brandInput').addEventListener('keydown', e => { if (e.key === 'Enter') addBrand(); });
+
+  function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  function dealId(d) { return (d.brand + '|' + d.retailer + '|' + (d.title || '')).toLowerCase().replace(/\s+/g, ''); }
+
+  // ---------- Find sales ----------
+  $('findBtn').onclick = findSales;
+  async function findSales() {
+    if (loading) return;
+    if (!getKey()) { alert('Please paste your Anthropic API key first.'); return; }
+    if (!brands.length) { alert('Add at least one brand first!'); return; }
+    loading = true; setLoadingUI(true); showSkeletons();
+
+    const prompt = 'You are a beauty deals researcher. Search the web for CURRENT, ACTIVE sales, discounts, promo codes, gift-with-purchase, or markdowns on these beauty brands: ' + brands.join(', ') + '.\n\n'
+      + 'Check major US retailers (Sephora, ULTA, Nordstrom, Macy\'s, Bloomingdale\'s) and each brand\'s own official website. Only include deals that appear to be currently active as of today.\n\n'
+      + 'Respond with ONLY a raw JSON array (no markdown, no backticks, no commentary). Each item must be an object with exactly these keys: '
+      + '"brand" (string), "retailer" (string), "title" (short deal name), "discount" (e.g. "20% off" or "Gift with purchase"), "details" (one short sentence), "url" (best direct link), "validUntil" (end date if known, else empty string).\n\n'
+      + 'Return up to 12 of the best/most relevant deals. If no active deals for a brand, omit it. Output the JSON array only.';
+
     try {
-      const r = await fetch('deals.json?t=' + Date.now());
-      if (!r.ok) throw new Error('fetch failed');
-      const data = await r.json();
-      allDeals = data.deals || [];
-      if (data.updatedAt) {
-        const d = new Date(data.updatedAt);
-        document.getElementById('lastChecked').textContent = 'Updated ' +
-          d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) + ' · ' +
-          d.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
-      }
-      renderRefillList(allDeals);
-      renderDeals(allDeals);
-    } catch (e) {
-      if (!allDeals.length) {
-        document.getElementById('deals').innerHTML =
-          '<div class="state"><div class="mark">&#10047;</div><p>Couldn\'t load deals right now.</p><p class="small">Try refreshing in a moment.</p></div>';
-      }
-    } finally {
-      btn.innerHTML = '↻ Refresh';
-    }
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': getKey(),
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify({
+          model: MODEL,
+          max_tokens: 4000,
+          messages: [{ role: 'user', content: prompt }],
+          tools: [{ type: 'web_search_20250305', name: 'web_search' }]
+        })
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error.message || 'API error');
+      const text = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n').trim();
+      renderDeals(parseDeals(text));
+      stampChecked();
+    } catch (err) {
+      console.error(err);
+      $('deals').innerHTML = '<div class="state"><div class="mark">&#10047;</div><p>Couldn’t fetch deals.</p><p class="small">' + escapeHtml(err.message || 'Try again in a moment.') + '</p></div>';
+      $('count').textContent = '';
+    } finally { loading = false; setLoadingUI(false); }
   }
 
-  document.querySelectorAll('.filter-btn[data-store]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.filter-btn[data-store]').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      activeStore = btn.dataset.store;
-      renderDeals(allDeals);
+  function parseDeals(text) {
+    if (!text) return [];
+    let t = text.replace(/```json/gi, '').replace(/```/g, '').trim();
+    const start = t.indexOf('['), end = t.lastIndexOf(']');
+    if (start === -1 || end === -1) return [];
+    try { const arr = JSON.parse(t.slice(start, end + 1)); return Array.isArray(arr) ? arr.filter(d => d && d.brand) : []; } catch { return []; }
+  }
+  function setLoadingUI(on) {
+    const btn = $('findBtn'), label = $('findLabel'); btn.disabled = on;
+    if (on) { label.textContent = 'Searching…'; btn.insertAdjacentHTML('afterbegin', '<span class="spin"></span>'); }
+    else { const s = btn.querySelector('.spin'); if (s) s.remove(); label.textContent = 'Refresh Sales'; }
+  }
+  function showSkeletons() {
+    let h = '';
+    for (let i = 0; i < 3; i++) h += '<div class="skeleton"><div class="sk-line" style="width:45%"></div><div class="sk-line" style="width:30%"></div><div class="sk-line" style="width:85%"></div><div class="sk-line" style="width:60%"></div></div>';
+    $('deals').innerHTML = h; $('count').textContent = '';
+  }
+  function renderDeals(deals) {
+    const el = $('deals');
+    if (!deals.length) { el.innerHTML = '<div class="state"><div class="mark">&#10047;</div><p>No active sales found right now.</p><p class="small">Check back soon — new deals drop all the time.</p></div>'; $('count').textContent = ''; return; }
+    const currentIds = [];
+    deals.forEach(d => { const id = dealId(d); d._new = !seen.has(id); currentIds.push(id); });
+    const newCount = deals.filter(d => d._new).length;
+    el.innerHTML = '';
+    deals.forEach((d, i) => {
+      const card = document.createElement('div'); card.className = 'deal'; card.style.animationDelay = (i * 0.05) + 's';
+      const url = d.url && /^https?:\/\//i.test(d.url) ? d.url : '#';
+      card.innerHTML =
+        '<div class="deal-top"><span class="deal-brand">' + escapeHtml(d.brand) + '</span>' + (d._new ? '<span class="new-tag">New</span>' : '') + '</div>'
+        + (d.discount ? '<span class="deal-discount">' + escapeHtml(d.discount) + '</span>' : '')
+        + (d.title ? '<div class="deal-title">' + escapeHtml(d.title) + '</div>' : '')
+        + (d.details ? '<div class="deal-details">' + escapeHtml(d.details) + '</div>' : '')
+        + (d.validUntil ? '<div class="deal-until">Through ' + escapeHtml(d.validUntil) + '</div>' : '')
+        + '<div class="deal-foot"><span class="deal-retailer">' + escapeHtml(d.retailer || 'Online') + '</span>'
+        + '<a class="deal-link" href="' + escapeHtml(url) + '" target="_blank" rel="noopener">View deal →</a></div>';
+      el.appendChild(card);
     });
-  });
+    $('count').innerHTML = '<b>' + deals.length + '</b> deal' + (deals.length !== 1 ? 's' : '') + (newCount ? ' · <b>' + newCount + '</b> new' : '');
+    currentIds.forEach(id => seen.add(id)); save('salepetal:seen', [...seen]);
+  }
+  function stampChecked() {
+    const now = new Date();
+    const str = now.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) + ' · ' + now.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' });
+    $('lastChecked').textContent = 'Last checked ' + str;
+    localStorage.setItem('salepetal:lastChecked', str);
+    setTimeout(maybeAskNotifications, 1200);
+  }
 
-  document.getElementById('refreshBtn').addEventListener('click', () => loadDeals(true));
-  loadDeals(false);
-  setInterval(() => loadDeals(false), 30 * 60 * 1000);
+  loadState();
+
+  // ── Service Worker registration ──────────────────────────────────────────
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(reg => { console.log('SW registered', reg.scope); })
+        .catch(err => console.warn('SW failed:', err));
+    });
+  }
+
+  // ── Notification permission prompt ──────────────────────────────────────
+  function maybeAskNotifications() {
+    if (!('Notification' in window)) return;
+    if (Notification.permission !== 'default') return;
+    if (localStorage.getItem('salepetal:notif-dismissed')) return;
+
+    const banner = document.createElement('div');
+    banner.id = 'notif-banner';
+    banner.style.cssText = `
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      width: calc(100% - 44px); max-width: 436px;
+      background: #2B2724; color: #F6F0E9; border-radius: 18px;
+      padding: 16px 18px; display: flex; align-items: center; gap: 14px;
+      box-shadow: 0 12px 40px -10px rgba(43,39,36,0.55);
+      font-family: 'Archivo', sans-serif; font-size: 13.5px; z-index: 999;
+      animation: rise .4s ease;
+    `;
+    banner.innerHTML = `
+      <span style="font-size:26px;flex-shrink:0">🌸</span>
+      <span style="flex:1;line-height:1.45">Get notified when <b style="color:#E2B7A8">new deals</b> drop — even when the app is closed.</span>
+      <div style="display:flex;flex-direction:column;gap:7px;flex-shrink:0">
+        <button id="notif-yes" style="background:#C98B7A;color:#fff;border:none;border-radius:100px;padding:8px 15px;font-family:'Archivo',sans-serif;font-weight:600;font-size:12px;cursor:pointer;white-space:nowrap">Allow</button>
+        <button id="notif-no" style="background:transparent;color:#9A9080;border:none;font-family:'Archivo',sans-serif;font-size:11px;cursor:pointer">Not now</button>
+      </div>`;
+    document.body.appendChild(banner);
+
+    document.getElementById('notif-yes').onclick = () => {
+      Notification.requestPermission().then(p => {
+        if (p === 'granted') {
+          banner.innerHTML = `<span style="font-size:22px">✓</span><span style="flex:1">Notifications on! You'll hear about new sales.</span>`;
+          setTimeout(() => banner.remove(), 2500);
+        } else { banner.remove(); }
+      });
+    };
+    document.getElementById('notif-no').onclick = () => {
+      localStorage.setItem('salepetal:notif-dismissed', '1');
+      banner.remove();
+    };
+  }
 </script>
 </body>
 </html>

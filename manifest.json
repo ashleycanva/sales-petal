@@ -1,0 +1,19 @@
+{
+  "name": "Sale Petal",
+  "short_name": "Sale Petal",
+  "description": "Your favorite beauty brands, on sale — all in one quiet place.",
+  "start_url": "/sales-petal/",
+  "scope": "/sales-petal/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F6F0E9",
+  "theme_color": "#C98B7A",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
