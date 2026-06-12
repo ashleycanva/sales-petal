@@ -85,10 +85,11 @@
   <h1>Sale <em>Petal</em></h1>
   <p class="subtitle">Your favorite brands, on sale &mdash; all in one quiet place.</p>
 
-  <span class="section-label">Your Brands</span>
+  <span class="section-label">My Tracked Products</span>
+  <p style="font-size:12px;color:#9A9080;margin:-6px 0 12px">Type any brand or product you want to watch &mdash; deals matching your list get highlighted.</p>
   <div class="brands" id="brands"></div>
   <div class="add-row">
-    <input id="brandInput" type="text" placeholder="Add a brand&hellip;" autocomplete="off" />
+    <input id="brandInput" type="text" placeholder="e.g. Charlotte Tilbury, Dyson Airwrap&hellip;" autocomplete="off" />
     <button class="add-btn" id="addBtn">+</button>
   </div>
 
@@ -108,8 +109,8 @@
   <p class="footnote">Deals are checked automatically every 4 hours.<br>Always confirm the price on the retailer&rsquo;s site before buying.</p>
 </div>
 <script>
-var DEFAULT_BRANDS = ["Lancôme", "Dr. Jart+", "Hourglass", "Patrick Ta"];
-var brands = [];
+var DEFAULT_KEYWORDS = [];
+var keywords = [];
 var seen = new Set();
 var loading = false;
 function $(id) { return document.getElementById(id); }
@@ -118,36 +119,42 @@ function load(k, fb) { try { var v = localStorage.getItem(k); return v ? JSON.pa
 function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {} }
 function dealId(d) { return (d.brand+"|"+d.retailer+"|"+(d.title||"")).toLowerCase().replace(/\s+/g,""); }
 
+function matchedKeywords(d) {
+  if (!keywords.length) return [];
+  var haystack = ((d.brand||"")+" "+(d.title||"")+" "+(d.details||"")).toLowerCase();
+  return keywords.filter(function(kw) { return haystack.indexOf(kw.toLowerCase()) !== -1; });
+}
+
 function loadState() {
-  brands = load("salepetal:brands", DEFAULT_BRANDS.slice());
+  keywords = load("salepetal:keywords", DEFAULT_KEYWORDS.slice());
   seen = new Set(load("salepetal:seen", []));
   var lc = localStorage.getItem("salepetal:lastChecked");
   if (lc) $("lastChecked").textContent = lc;
-  renderBrands();
+  renderKeywords();
 }
 
-function renderBrands() {
+function renderKeywords() {
   var el = $("brands"); el.innerHTML = "";
-  if (!brands.length) { el.innerHTML = "<span style=\"font-size:13px;color:#B5A89B\">No brands yet &mdash; add some below.</span>"; return; }
-  brands.forEach(function(b, i) {
+  if (!keywords.length) { el.innerHTML = "<span style=\"font-size:13px;color:#B5A89B\">No products tracked yet &mdash; add one above.</span>"; return; }
+  keywords.forEach(function(b, i) {
     var chip = document.createElement("span");
     chip.className = "chip"; chip.style.animationDelay = (i*0.03)+"s";
     chip.innerHTML = esc(b) + " <span class=\"x\" data-i=\""+i+"\">×</span>";
     el.appendChild(chip);
   });
   el.querySelectorAll(".x").forEach(function(x) {
-    x.onclick = function() { brands.splice(+x.dataset.i,1); save("salepetal:brands",brands); renderBrands(); };
+    x.onclick = function() { keywords.splice(+x.dataset.i,1); save("salepetal:keywords",keywords); renderKeywords(); loadDeals(false); };
   });
 }
 
-function addBrand() {
+function addKeyword() {
   var v = $("brandInput").value.trim(); if (!v) return;
-  if (!brands.some(function(b) { return b.toLowerCase()===v.toLowerCase(); })) { brands.push(v); save("salepetal:brands",brands); renderBrands(); }
+  if (!keywords.some(function(b) { return b.toLowerCase()===v.toLowerCase(); })) { keywords.push(v); save("salepetal:keywords",keywords); renderKeywords(); loadDeals(false); }
   $("brandInput").value = ""; $("brandInput").focus();
 }
-$("addBtn").onclick = addBrand;
-$("brandInput").addEventListener("keydown", function(e) { if (e.key==="Enter") addBrand(); });
-$("findBtn").onclick = function() { loadDeals(true); };
+$("addBtn").onclick = addKeyword;
+$("brandInput").addEventListener("keydown", function(e) { if (e.key==="Enter") addKeyword(); });
+$("findBtn").onclick = function() { loading = false; loadDeals(true); };
 
 function showSkeletons() {
   var h = "";
@@ -158,7 +165,7 @@ function showSkeletons() {
 function renderDeals(deals) {
   var el = $("deals");
   if (!deals.length) {
-    el.innerHTML = "<div class=\"state\"><div class=\"mark\">&#10047;</div><p>No deals right now for your brands.</p><p class=\"small\">Checked every 4 hours &mdash; check back soon.</p></div>";
+    el.innerHTML = "<div class=\"state\"><div class=\"mark\">&#10047;</div><p>No deals found right now.</p><p class=\"small\">Deals are checked every 4 hours &mdash; check back soon.</p></div>";
     $("count").textContent = ""; return;
   }
   var currentIds = [];
@@ -166,13 +173,16 @@ function renderDeals(deals) {
   var newCount = deals.filter(function(d){return d._new;}).length;
   el.innerHTML = "";
   deals.forEach(function(d, i) {
-    var priority = d.matched_products && d.matched_products.length > 0;
+    var kw = matchedKeywords(d);
+    var scraperMatches = d.matched_products && d.matched_products.length > 0 ? d.matched_products : [];
+    var allMatches = scraperMatches.concat(kw.filter(function(k){ return scraperMatches.indexOf(k)===-1; }));
+    var priority = allMatches.length > 0;
     var card = document.createElement("div");
     card.className = "deal" + (priority ? " priority" : "");
     card.style.animationDelay = (i*0.05)+"s";
     var url = d.url && /^https?:\/\//i.test(d.url) ? d.url : "#";
     var tag = priority ? "<span class=\"your-tag\">Your Product</span>" : (d._new ? "<span class=\"new-tag\">New</span>" : "");
-    var productLine = priority ? "<div class=\"deal-product\">★ "+esc(d.matched_products.join(", "))+"</div>" : "";
+    var productLine = priority ? "<div class=\"deal-product\">&#9733; "+esc(allMatches.join(", "))+"</div>" : "";
     card.innerHTML =
       "<div class=\"deal-top\"><span class=\"deal-brand\">"+esc(d.brand)+"</span>"+tag+"</div>"
       +productLine
@@ -180,7 +190,7 @@ function renderDeals(deals) {
       +(d.title?"<div class=\"deal-title\">"+esc(d.title)+"</div>":"")
       +(d.details?"<div class=\"deal-details\">"+esc(d.details)+"</div>":"")
       +"<div class=\"deal-foot\"><span class=\"deal-retailer\">"+esc(d.retailer||"Online")+"</span>"
-      +"<a class=\"deal-link\" href=\""+esc(url)+"\" target=\"_blank\" rel=\"noopener\">View deal &#8594;</a></div>";
+      +"<a class=\"deal-link\" href=\""+url+"\" target=\"_blank\" rel=\"noopener\">View deal &#8594;</a></div>";
     el.appendChild(card);
   });
   $("count").innerHTML = "<b>"+deals.length+"</b> deal"+(deals.length!==1?"s":"")+(newCount?" &middot; <b>"+newCount+"</b> new":"");
@@ -204,7 +214,11 @@ async function loadDeals(showSpinner) {
       $("lastChecked").textContent = str;
       localStorage.setItem("salepetal:lastChecked", str);
     }
-    deals.sort(function(a,b){ return ((b.matched_products||[]).length>0?1:0)-((a.matched_products||[]).length>0?1:0); });
+    deals.sort(function(a,b){
+      var am = ((a.matched_products||[]).length>0 || matchedKeywords(a).length>0) ? 1 : 0;
+      var bm = ((b.matched_products||[]).length>0 || matchedKeywords(b).length>0) ? 1 : 0;
+      return bm - am;
+    });
     renderDeals(deals);
     setTimeout(maybeAskNotifications, 1200);
   } catch(err) {
