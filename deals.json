@@ -1,113 +1,77 @@
 {
-  "deals": [
+  "products": [
     {
-      "brand": "Lanc\u00f4me",
-      "retailer": "Macy's",
-      "title": "Macy's 10 Days of Glam: Select Top Beauty Products (Lancome, Clinique & More) 50",
-      "discount": "50% off",
-      "details": "Macy's is offering *10 Days of Glam with Select Top Beauty Products 50% Off *(Aug. 8 - Aug. 17). *Sh",
-      "url": "https://slickdeals.net/f/18503629-macy-s-10-days-of-glam-select-top-beauty-products-lancome-clinique-more-50-off-free-s-h-aug-8-aug-17?utm_source=rss&utm_content=fp&utm_medium=RSS2",
-      "image": "",
-      "validUntil": "",
-      "matched_products": []
+      "name": "Advanced Genifique Face Serum",
+      "brand": "Lancome",
+      "on_sale": false,
+      "retailers": [],
+      "brand_promo_alert": null
     },
     {
-      "brand": "Lanc\u00f4me",
-      "retailer": "Amazon",
-      "title": "Lancome Monsieur Big Volumizing Mascara (Black) $11.40 w/ Subscribe & Save",
-      "discount": "Deal",
-      "details": "Lancome via Amazon has *Lancome Monsieur Big Volumizing Mascara* (Black) for $12 - 5% when you check",
-      "url": "https://slickdeals.net/f/17930694-lancome-monsieur-big-volumizing-mascara-black-12-free-shipping-w-prime-or-on-35?utm_source=rss&utm_content=fp&utm_medium=RSS2",
-      "image": "",
-      "validUntil": "",
-      "matched_products": []
+      "name": "Advanced Genifique Night Cream",
+      "brand": "Lancome",
+      "on_sale": false,
+      "retailers": [],
+      "brand_promo_alert": null
     },
     {
-      "brand": "Lanc\u00f4me",
-      "retailer": "Ulta",
-      "title": "Ulta 21 Day of Beauty Sale: Select Beauty Products/Brands 50% Off + Free S/H on ",
-      "discount": "50% off",
-      "details": "Update: This popular deal is still available \n \nUlta is hosting their *Ulta 21 Day of Beauty* and of",
-      "url": "https://slickdeals.net/f/16496212-ulta-21-day-of-beauty-sale-select-beauty-products-brands-50-off-free-s-h-on-35?utm_source=rss&utm_content=fp&utm_medium=RSS2",
-      "image": "",
-      "validUntil": "",
-      "matched_products": []
+      "name": "Renergie H.P.N. 300-Peptide Cream",
+      "brand": "Lancome",
+      "on_sale": false,
+      "retailers": [],
+      "brand_promo_alert": null
     },
     {
-      "brand": "Lanc\u00f4me",
-      "retailer": "Macy's",
-      "title": "Macy's 10 Days of Beauty Glam Cosmetic/Skincare Product Sale 50% Off w/ 6% SD Ca",
-      "discount": "50% off",
-      "details": "Macy's is hosting their *10 Days of Beauty Glam Cosmetic/Skincare Products* on sale for *50% Off* li",
-      "url": "https://slickdeals.net/f/15023500-macy-s-10-days-of-beauty-glam-cosmetic-skincare-product-sale-50-off-w-6-sd-cashback-free-s-h?utm_source=rss&utm_content=fp&utm_medium=RSS2",
-      "image": "",
-      "validUntil": "",
-      "matched_products": []
+      "name": "Major Headlines Blush Duo",
+      "brand": "Patrick Ta",
+      "on_sale": false,
+      "retailers": [],
+      "brand_promo_alert": null
     },
     {
-      "brand": "Lanc\u00f4me",
-      "retailer": "Ulta",
-      "title": "Ulta 21 Days of Beauty Sale: Select Make-up / Skincare Products 50% Off + Free S",
-      "discount": "50% off",
-      "details": "Updating: This is the final week of this ongoing promotion, with new deals every day. \n \nUlta Beauty",
-      "url": "https://slickdeals.net/f/14892991-ulta-21-days-of-beauty-sale-select-make-up-skincare-products-50-off-free-store-pickup?utm_source=rss&utm_content=fp&utm_medium=RSS2",
-      "image": "",
-      "validUntil": "",
-      "matched_products": []
-    },
-    {
-      "brand": "Lanc\u00f4me",
-      "retailer": "Nordstrom",
-      "title": "Nordstrom Rack Beauty Sale: NARS, Urban Decay, MAC & More up to 70% Off + Free S",
-      "discount": "70% off",
-      "details": "Nordstrom Rack has select *Beauty Products* (NARS, Urban Decay, MAC & More) on sale *up to 70% Off*.",
-      "url": "https://slickdeals.net/e/14114228-up-to-75-off-nars-lorac-more-make-up-nordstrom-rack?utm_source=rss&utm_content=fp&utm_medium=RSS2",
-      "image": "",
-      "validUntil": "",
-      "matched_products": []
-    },
-    {
-      "brand": "Lanc\u00f4me",
-      "retailer": "Ulta",
-      "title": "Ulta Summer Ready Sale: bareMinerals Lash Domination Volumizing Mascara $10 & Mo",
-      "discount": "On Sale",
-      "details": "Ulta Beauty has select *Makeup, Hair Care, & Skin Care* on sale listed below. *Shipping is free* on ",
-      "url": "https://slickdeals.net/e/14077166-ulta-summer-ready-sale-bareminerals-lash-domination-volumizing-mascara-10-more-free-s-h-orders-35?utm_source=rss&utm_content=fp&utm_medium=RSS2",
-      "image": "",
-      "validUntil": "",
-      "matched_products": []
-    },
-    {
-      "brand": "Lanc\u00f4me",
-      "retailer": "Online",
-      "title": "Memorial Weekend Deals: Grills, Beauty, Home Goods, Apparel, Appliances 20%-60% ",
-      "discount": "60% off",
-      "details": "Many retailers are offering *Deals* on various categories of items for *Memorial Day Weekend*. *Many",
-      "url": "https://slickdeals.net/e/14069948-memorial-weekend-deals-grills-beauty-home-goods-apparel-appliances-20-60-off-much-more?utm_source=rss&utm_content=fp&utm_medium=RSS2",
-      "image": "",
-      "validUntil": "",
-      "matched_products": []
-    },
-    {
+      "name": "Veil Hydrating Skin Tint",
       "brand": "Hourglass",
-      "retailer": "Sephora",
-      "title": "Play! by Sephora Makeup & Skin Care Gift Sets (various) $8.50 Each or Less + Fre",
-      "discount": "15% off",
-      "details": "Sephora has select *Play! by Sephora Makeup & Skin Care Gift Sets* (various) on sale for *$8.50* eac",
-      "url": "https://slickdeals.net/e/12275407-play-by-sephora-makeup-skin-care-gift-sets-various-8-50-each-or-less-free-s-h-on-50?utm_source=rss&utm_content=fp&utm_medium=RSS2",
-      "image": "",
-      "validUntil": "",
-      "matched_products": []
+      "on_sale": false,
+      "retailers": [],
+      "brand_promo_alert": null
+    },
+    {
+      "name": "Vanish Concealer",
+      "brand": "Hourglass",
+      "on_sale": false,
+      "retailers": [],
+      "brand_promo_alert": null
     }
   ],
-  "updatedAt": "2026-06-12T21:44:56.734087Z",
-  "count": 9,
-  "products": [
-    "Advanced G\u00e9nifique Face Serum",
-    "Advanced G\u00e9nifique Night Cream",
-    "R\u00e9nergie H.P.N. 300-Peptide Cream",
-    "Major Headlines Blush Duo",
-    "Veil Hydrating Skin Tint",
-    "Vanish Concealer"
-  ]
+  "brands": [
+    {
+      "name": "Lancome",
+      "url": "https://www.lancome-usa.com",
+      "has_deals": false,
+      "deals": [],
+      "summary": ""
+    },
+    {
+      "name": "Dr. Jart+",
+      "url": "https://www.drjart.com",
+      "has_deals": false,
+      "deals": [],
+      "summary": ""
+    },
+    {
+      "name": "Hourglass",
+      "url": "https://www.hourglasscosmetics.com",
+      "has_deals": false,
+      "deals": [],
+      "summary": ""
+    },
+    {
+      "name": "Patrick Ta",
+      "url": "https://patrickta.com",
+      "has_deals": false,
+      "deals": [],
+      "summary": ""
+    }
+  ],
+  "updatedAt": "2026-06-13T11:56:51.555344Z"
 }
